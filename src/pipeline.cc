@@ -31,6 +31,8 @@
 #include "operations.h"
 #include "pipeline.h"
 
+#include "rlbox_init.h"
+
 #if defined(WIN32)
 #define STAT64_STRUCT __stat64
 #define STAT64_FUNCTION _stat64
@@ -1324,14 +1326,22 @@ class PipelineWorker : public Napi::AsyncWorker {
   pipeline(options, output, callback)
 */
 Napi::Value pipeline(const Napi::CallbackInfo& info) {
+
+  rlbox_sandbox_vips* sandbox = new rlbox_sandbox_vips();
+  if (!sandbox->create_sandbox()){
+    abort();
+  }
   // V8 objects are converted to non-V8 types held in the baton struct
-  PipelineBaton *baton = new PipelineBaton;
+  tainted_vips<PipelineBaton *> t_baton = sandbox->malloc_in_sandbox<PipelineBaton>();
+  sandbox->invoke_sandbox_function(InitPipelineBaton, t_baton);
+
+  PipelineBaton *baton = t_baton.UNSAFE_unverified();
   Napi::Object options = info[0].As<Napi::Object>();
 
   // Input
   baton->input = sharp::CreateInputDescriptor(options.Get("input").As<Napi::Object>());
   // Extract image options
-  baton->topOffsetPre = sharp::AttrAsInt32(options, "topOffsetPre");
+  t_baton->topOffsetPre = sharp::AttrAsInt32(options, "topOffsetPre");
   baton->leftOffsetPre = sharp::AttrAsInt32(options, "leftOffsetPre");
   baton->widthPre = sharp::AttrAsInt32(options, "widthPre");
   baton->heightPre = sharp::AttrAsInt32(options, "heightPre");

@@ -346,4 +346,9 @@ struct PipelineBaton {
     tileDepth(VIPS_FOREIGN_DZ_DEPTH_LAST) {}
 };
 
+inline void InitPipelineBaton(PipelineBaton* ptr) {
+  PipelineBaton default_val;
+  memcpy(ptr, &default_val, sizeof(PipelineBaton));
+}
+
 #endif  // SRC_PIPELINE_H_
