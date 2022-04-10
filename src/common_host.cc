@@ -77,64 +77,65 @@ namespace sharp {
 
   // Create an InputDescriptor instance from a Napi::Object describing an input image
   InputDescriptor* CreateInputDescriptor(Napi::Object input) {
-    InputDescriptor *descriptor = new InputDescriptor;
+    InputDescriptor *descriptor = CreateInputDescriptor();
     if (HasAttr(input, "file")) {
-      descriptor->file = AttrAsStr(input, "file");
+      InputDescriptor_SetFile(descriptor, AttrAsStr(input, "file").c_str());
     } else if (HasAttr(input, "buffer")) {
       Napi::Buffer<char> buffer = input.Get("buffer").As<Napi::Buffer<char>>();
-      descriptor->bufferLength = buffer.Length();
-      descriptor->buffer = buffer.Data();
-      descriptor->isBuffer = TRUE;
+      InputDescriptor_SetBufferLength(descriptor, buffer.Length());
+      InputDescriptor_SetBuffer(descriptor, buffer.Data());
+      InputDescriptor_SetIsBuffer(descriptor, TRUE);
     }
-    descriptor->failOnError = AttrAsBool(input, "failOnError");
+    InputDescriptor_SetFailOnError(descriptor, AttrAsBool(input, "failOnError"));
     // Density for vector-based input
     if (HasAttr(input, "density")) {
-      descriptor->density = AttrAsDouble(input, "density");
+      InputDescriptor_SetDensity(descriptor, AttrAsDouble(input, "density"));
     }
     // Raw pixel input
     if (HasAttr(input, "rawChannels")) {
-      descriptor->rawDepth = static_cast<VipsBandFormat>(
+      InputDescriptor_SetRawDepth(descriptor,
         vips_enum_from_nick(nullptr, VIPS_TYPE_BAND_FORMAT,
         AttrAsStr(input, "rawDepth").data()));
-      descriptor->rawChannels = AttrAsUint32(input, "rawChannels");
-      descriptor->rawWidth = AttrAsUint32(input, "rawWidth");
-      descriptor->rawHeight = AttrAsUint32(input, "rawHeight");
-      descriptor->rawPremultiplied = AttrAsBool(input, "rawPremultiplied");
+      InputDescriptor_SetRawChannels(descriptor, AttrAsUint32(input, "rawChannels"));
+      InputDescriptor_SetRawWidth(descriptor, AttrAsUint32(input, "rawWidth"));
+      InputDescriptor_SetRawHeight(descriptor, AttrAsUint32(input, "rawHeight"));
+      InputDescriptor_SetRawPremultiplied(descriptor, AttrAsBool(input, "rawPremultiplied"));
     }
     // Multi-page input (GIF, TIFF, PDF)
     if (HasAttr(input, "pages")) {
-      descriptor->pages = AttrAsInt32(input, "pages");
+      InputDescriptor_SetPages(descriptor, AttrAsInt32(input, "pages"));
     }
     if (HasAttr(input, "page")) {
-      descriptor->page = AttrAsUint32(input, "page");
+      InputDescriptor_SetPage(descriptor, AttrAsUint32(input, "page"));
     }
     // Multi-level input (OpenSlide)
     if (HasAttr(input, "level")) {
-      descriptor->level = AttrAsUint32(input, "level");
+      InputDescriptor_SetLevel(descriptor, AttrAsUint32(input, "level"));
     }
     // subIFD (OME-TIFF)
     if (HasAttr(input, "subifd")) {
-      descriptor->subifd = AttrAsInt32(input, "subifd");
+      InputDescriptor_SetSubifd(descriptor, AttrAsInt32(input, "subifd"));
     }
     // Create new image
     if (HasAttr(input, "createChannels")) {
-      descriptor->createChannels = AttrAsUint32(input, "createChannels");
-      descriptor->createWidth = AttrAsUint32(input, "createWidth");
-      descriptor->createHeight = AttrAsUint32(input, "createHeight");
+      InputDescriptor_SetCreateChannels(descriptor, AttrAsUint32(input, "createChannels"));
+      InputDescriptor_SetCreateWidth(descriptor, AttrAsUint32(input, "createWidth"));
+      InputDescriptor_SetCreateHeight(descriptor, AttrAsUint32(input, "createHeight"));
       if (HasAttr(input, "createNoiseType")) {
-        descriptor->createNoiseType = AttrAsStr(input, "createNoiseType");
-        descriptor->createNoiseMean = AttrAsDouble(input, "createNoiseMean");
-        descriptor->createNoiseSigma = AttrAsDouble(input, "createNoiseSigma");
+        InputDescriptor_SetCreateNoiseType(descriptor, AttrAsStr(input, "createNoiseType").c_str());
+        InputDescriptor_SetCreateNoiseMean(descriptor, AttrAsDouble(input, "createNoiseMean"));
+        InputDescriptor_SetCreateNoiseSigma(descriptor, AttrAsDouble(input, "createNoiseSigma"));
       } else {
-        descriptor->createBackground = AttrAsVectorOfDouble(input, "createBackground");
+        std::vector<double> createBackgroundVal = AttrAsVectorOfDouble(input, "createBackground");
+        InputDescriptor_SetCreateBackground(descriptor, createBackgroundVal.data(), createBackgroundVal.size());
       }
     }
     // Limit input images to a given number of pixels, where pixels = width * height
-    descriptor->limitInputPixels = AttrAsUint32(input, "limitInputPixels");
+    InputDescriptor_SetLimitInputPixels(descriptor, AttrAsUint32(input, "limitInputPixels"));
     // Allow switch from random to sequential access
-    descriptor->access = AttrAsBool(input, "sequentialRead") ? VIPS_ACCESS_SEQUENTIAL : VIPS_ACCESS_RANDOM;
+    InputDescriptor_SetAccess(descriptor, (int) AttrAsBool(input, "sequentialRead") ? VIPS_ACCESS_SEQUENTIAL : VIPS_ACCESS_RANDOM);
     // Remove safety features and allow unlimited SVG/PNG input
-    descriptor->unlimited = AttrAsBool(input, "unlimited");
+    InputDescriptor_SetUnlimited(descriptor, AttrAsBool(input, "unlimited"));
     return descriptor;
   }
 
