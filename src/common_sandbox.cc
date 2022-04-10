@@ -31,6 +31,8 @@ namespace sharp {
   extern "C" {
     int InputDescriptor_GetAccess(InputDescriptor* input) { return (int) input->access; }
     void InputDescriptor_SetAccess(InputDescriptor* input, int value) { input->access = (VipsAccess) value; }
+    size_t InputDescriptor_GetBufferLength(InputDescriptor* input) { return input->bufferLength; }
+    void InputDescriptor_SetBufferLength(InputDescriptor* input, size_t value) { input->bufferLength = value; }
   }
 
   // Filename extension checkers

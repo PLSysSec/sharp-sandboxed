@@ -47,106 +47,112 @@ class MetadataWorker : public Napi::AsyncWorker {
       warning = sharp::VipsWarningPop();
     }
 
-    if (baton->err.empty()) {
+    if (MetadataBaton_GetErr(baton) == std::string("")) {
       Napi::Object info = Napi::Object::New(env);
-      info.Set("format", baton->format);
-      if (baton->input->bufferLength > 0) {
-        info.Set("size", baton->input->bufferLength);
+      info.Set("format", MetadataBaton_GetFormat(baton));
+      auto input = MetadataBaton_GetInput(baton);
+      auto bufferLength = InputDescriptor_GetBufferLength(input);
+      if (bufferLength > 0) {
+        info.Set("size", bufferLength);
       }
-      info.Set("width", baton->width);
-      info.Set("height", baton->height);
-      info.Set("space", baton->space);
-      info.Set("channels", baton->channels);
-      info.Set("depth", baton->depth);
-      if (baton->density > 0) {
-        info.Set("density", baton->density);
+      info.Set("width", MetadataBaton_GetWidth(baton));
+      info.Set("height", MetadataBaton_GetHeight(baton));
+      info.Set("space", MetadataBaton_GetSpace(baton));
+      info.Set("channels", MetadataBaton_GetChannels(baton));
+      info.Set("depth", MetadataBaton_GetDepth(baton));
+      if (MetadataBaton_GetDensity(baton) > 0) {
+        info.Set("density", MetadataBaton_GetDensity(baton));
       }
-      if (!baton->chromaSubsampling.empty()) {
-        info.Set("chromaSubsampling", baton->chromaSubsampling);
+      if (MetadataBaton_GetChromaSubsampling(baton) != std::string("")) {
+        info.Set("chromaSubsampling", MetadataBaton_GetChromaSubsampling(baton));
       }
-      info.Set("isProgressive", baton->isProgressive);
-      if (baton->paletteBitDepth > 0) {
-        info.Set("paletteBitDepth", baton->paletteBitDepth);
+      info.Set("isProgressive", MetadataBaton_GetIsProgressive(baton));
+      if (MetadataBaton_GetPaletteBitDepth(baton) > 0) {
+        info.Set("paletteBitDepth", MetadataBaton_GetPaletteBitDepth(baton));
       }
-      if (baton->pages > 0) {
-        info.Set("pages", baton->pages);
+      if (MetadataBaton_GetPages(baton) > 0) {
+        info.Set("pages", MetadataBaton_GetPages(baton));
       }
-      if (baton->pageHeight > 0) {
-        info.Set("pageHeight", baton->pageHeight);
+      if (MetadataBaton_GetPageHeight(baton) > 0) {
+        info.Set("pageHeight", MetadataBaton_GetPageHeight(baton));
       }
-      if (baton->loop >= 0) {
-        info.Set("loop", baton->loop);
+      if (MetadataBaton_GetLoop(baton) >= 0) {
+        info.Set("loop", MetadataBaton_GetLoop(baton));
       }
-      if (!baton->delay.empty()) {
-        int i = 0;
-        Napi::Array delay = Napi::Array::New(env, static_cast<size_t>(baton->delay.size()));
-        for (int const d : baton->delay) {
-          delay.Set(i++, d);
+      if (!MetadataBaton_GetDelay_Empty(baton)) {
+        size_t baton_delay_size = MetadataBaton_GetDelay_Size(baton);
+        int* baton_delay = MetadataBaton_GetDelay(baton);
+        Napi::Array delay = Napi::Array::New(env, static_cast<size_t>(baton_delay_size));
+        for (size_t i = 0; i < baton_delay_size; i++) {
+          int const d = baton_delay[i];
+          delay.Set(i, d);
         }
         info.Set("delay", delay);
       }
-      if (baton->pagePrimary > -1) {
-        info.Set("pagePrimary", baton->pagePrimary);
+      if (MetadataBaton_GetPagePrimary(baton) > -1) {
+        info.Set("pagePrimary", MetadataBaton_GetPagePrimary(baton));
       }
-      if (!baton->compression.empty()) {
-        info.Set("compression", baton->compression);
+      if (MetadataBaton_GetCompression(baton) != std::string("")) {
+        info.Set("compression", MetadataBaton_GetCompression(baton));
       }
-      if (!baton->resolutionUnit.empty()) {
-        info.Set("resolutionUnit", baton->resolutionUnit == "in" ? "inch" : baton->resolutionUnit);
+      if (MetadataBaton_GetResolutionUnit(baton) != std::string("")) {
+        info.Set("resolutionUnit", MetadataBaton_GetResolutionUnit(baton) == std::string("in") ? std::string("inch") : MetadataBaton_GetResolutionUnit(baton));
       }
-      if (!baton->levels.empty()) {
-        int i = 0;
-        Napi::Array levels = Napi::Array::New(env, static_cast<size_t>(baton->levels.size()));
-        for (std::pair<int, int> const &l : baton->levels) {
+      if (!MetadataBaton_GetLevels_Empty(baton)) {
+        size_t baton_levels_size = MetadataBaton_GetLevels_Size(baton);
+        MetadataDimension* baton_levels = MetadataBaton_GetLevels(baton);
+        Napi::Array levels = Napi::Array::New(env, static_cast<size_t>(baton_levels_size));
+        for (size_t i = 0; i < baton_levels_size; i++) {
+          MetadataDimension const &l = baton_levels[i];
           Napi::Object level = Napi::Object::New(env);
-          level.Set("width", l.first);
-          level.Set("height", l.second);
-          levels.Set(i++, level);
+          level.Set("width", l.width);
+          level.Set("height", l.height);
+          levels.Set(i, level);
         }
         info.Set("levels", levels);
       }
-      if (baton->subifds > 0) {
-        info.Set("subifds", baton->subifds);
+      if (MetadataBaton_GetSubifds(baton) > 0) {
+        info.Set("subifds", MetadataBaton_GetSubifds(baton));
       }
-      if (!baton->background.empty()) {
-        if (baton->background.size() == 3) {
+      if (!MetadataBaton_GetBackground_Empty(baton)) {
+        auto baton_background = MetadataBaton_GetBackground(baton);
+        if (MetadataBaton_GetBackground_Size(baton) == 3) {
           Napi::Object background = Napi::Object::New(env);
-          background.Set("r", baton->background[0]);
-          background.Set("g", baton->background[1]);
-          background.Set("b", baton->background[2]);
+          background.Set("r", baton_background[0]);
+          background.Set("g", baton_background[1]);
+          background.Set("b", baton_background[2]);
           info.Set("background", background);
         } else {
-          info.Set("background", baton->background[0]);
+          info.Set("background", baton_background[0]);
         }
       }
-      info.Set("hasProfile", baton->hasProfile);
-      info.Set("hasAlpha", baton->hasAlpha);
-      if (baton->orientation > 0) {
-        info.Set("orientation", baton->orientation);
+      info.Set("hasProfile", MetadataBaton_GetHasProfile(baton));
+      info.Set("hasAlpha", MetadataBaton_GetHasAlpha(baton));
+      if (MetadataBaton_GetOrientation(baton) > 0) {
+        info.Set("orientation", MetadataBaton_GetOrientation(baton));
       }
-      if (baton->exifLength > 0) {
-        info.Set("exif", Napi::Buffer<char>::New(env, baton->exif, baton->exifLength, sharp::FreeCallback));
+      if (MetadataBaton_GetExifLength(baton) > 0) {
+        info.Set("exif", Napi::Buffer<char>::New(env, MetadataBaton_GetExif(baton), MetadataBaton_GetExifLength(baton), sharp::FreeCallback));
       }
-      if (baton->iccLength > 0) {
-        info.Set("icc", Napi::Buffer<char>::New(env, baton->icc, baton->iccLength, sharp::FreeCallback));
+      if (MetadataBaton_GetIccLength(baton) > 0) {
+        info.Set("icc", Napi::Buffer<char>::New(env, MetadataBaton_GetIcc(baton), MetadataBaton_GetIccLength(baton), sharp::FreeCallback));
       }
-      if (baton->iptcLength > 0) {
-        info.Set("iptc", Napi::Buffer<char>::New(env, baton->iptc, baton->iptcLength, sharp::FreeCallback));
+      if (MetadataBaton_GetIptcLength(baton) > 0) {
+        info.Set("iptc", Napi::Buffer<char>::New(env, MetadataBaton_GetIptc(baton), MetadataBaton_GetIptcLength(baton), sharp::FreeCallback));
       }
-      if (baton->xmpLength > 0) {
-        info.Set("xmp", Napi::Buffer<char>::New(env, baton->xmp, baton->xmpLength, sharp::FreeCallback));
+      if (MetadataBaton_GetXmpLength(baton) > 0) {
+        info.Set("xmp", Napi::Buffer<char>::New(env, MetadataBaton_GetXmp(baton), MetadataBaton_GetXmpLength(baton), sharp::FreeCallback));
       }
-      if (baton->tifftagPhotoshopLength > 0) {
+      if (MetadataBaton_GetTifftagPhotoshopLength(baton) > 0) {
         info.Set("tifftagPhotoshop",
-          Napi::Buffer<char>::New(env, baton->tifftagPhotoshop, baton->tifftagPhotoshopLength, sharp::FreeCallback));
+          Napi::Buffer<char>::New(env, MetadataBaton_GetTifftagPhotoshop(baton), MetadataBaton_GetTifftagPhotoshopLength(baton), sharp::FreeCallback));
       }
       Callback().MakeCallback(Receiver().Value(), { env.Null(), info });
     } else {
-      Callback().MakeCallback(Receiver().Value(), { Napi::Error::New(env, baton->err).Value() });
+      Callback().MakeCallback(Receiver().Value(), { Napi::Error::New(env, MetadataBaton_GetErr(baton)).Value() });
     }
 
-    delete baton->input;
-    delete baton;
+    DestroyMetadataBaton(baton);
   }
 
  private:
@@ -159,11 +165,11 @@ class MetadataWorker : public Napi::AsyncWorker {
 */
 Napi::Value metadata(const Napi::CallbackInfo& info) {
   // V8 objects are converted to non-V8 types held in the baton struct
-  MetadataBaton *baton = new MetadataBaton;
+  MetadataBaton *baton = CreateMetadataBaton();
   Napi::Object options = info[0].As<Napi::Object>();
 
   // Input
-  baton->input = sharp::CreateInputDescriptor(options.Get("input").As<Napi::Object>());
+  MetadataBaton_SetInput(baton, sharp::CreateInputDescriptor(options.Get("input").As<Napi::Object>()));
 
   // Function to notify of libvips warnings
   Napi::Function debuglog = options.Get("debuglog").As<Napi::Function>();

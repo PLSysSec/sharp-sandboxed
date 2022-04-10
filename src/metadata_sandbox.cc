@@ -59,7 +59,8 @@ void MetadataWorkerExecute(MetadataBaton* baton) {
         std::string prefix = "openslide.level[" + std::to_string(l) + "].";
         int const width = std::stoi(image.get_string((prefix + "width").data()));
         int const height = std::stoi(image.get_string((prefix + "height").data()));
-        baton->levels.push_back(std::pair<int, int>(width, height));
+        MetadataDimension val {width, height};
+        baton->levels.push_back(val);
       }
     }
     if (image.get_typeof(VIPS_META_N_SUBIFDS) == G_TYPE_INT) {
@@ -118,3 +119,90 @@ void MetadataWorkerExecute(MetadataBaton* baton) {
   vips_error_clear();
   vips_thread_shutdown();
 }
+
+MetadataBaton* CreateMetadataBaton() {
+  return new MetadataBaton;
+}
+
+void DestroyMetadataBaton(MetadataBaton* baton) {
+  delete baton->input;
+  delete baton;
+}
+
+sharp::InputDescriptor* MetadataBaton_GetInput(MetadataBaton* baton) { return baton->input; }
+void MetadataBaton_SetInput(MetadataBaton* baton, sharp::InputDescriptor* val) { baton->input = val; }
+const char* MetadataBaton_GetFormat(MetadataBaton* baton) { return baton->format.c_str(); }
+void MetadataBaton_SetFormat(MetadataBaton* baton, const char* val) { baton->format = val; }
+int MetadataBaton_GetWidth(MetadataBaton* baton) { return baton->width; }
+void MetadataBaton_SetWidth(MetadataBaton* baton, int val) { baton->width = val; }
+int MetadataBaton_GetHeight(MetadataBaton* baton) { return baton->height; }
+void MetadataBaton_SetHeight(MetadataBaton* baton, int val) { baton->height = val; }
+const char* MetadataBaton_GetSpace(MetadataBaton* baton) { return baton->space.c_str(); }
+void MetadataBaton_SetSpace(MetadataBaton* baton, const char* val) { baton->space = val; }
+int MetadataBaton_GetChannels(MetadataBaton* baton) { return baton->channels; }
+void MetadataBaton_SetChannels(MetadataBaton* baton, int val) { baton->channels = val; }
+const char* MetadataBaton_GetDepth(MetadataBaton* baton) { return baton->depth.c_str(); }
+void MetadataBaton_SetDepth(MetadataBaton* baton, const char* val) { baton->depth = val; }
+int MetadataBaton_GetDensity(MetadataBaton* baton) { return baton->density; }
+void MetadataBaton_SetDensity(MetadataBaton* baton, int val) { baton->density = val; }
+const char* MetadataBaton_GetChromaSubsampling(MetadataBaton* baton) { return baton->chromaSubsampling.c_str(); }
+void MetadataBaton_SetChromaSubsampling(MetadataBaton* baton, const char* val) { baton->chromaSubsampling = val; }
+bool MetadataBaton_GetIsProgressive(MetadataBaton* baton) { return baton->isProgressive; }
+void MetadataBaton_SetIsProgressive(MetadataBaton* baton, bool val) { baton->isProgressive = val; }
+int MetadataBaton_GetPaletteBitDepth(MetadataBaton* baton) { return baton->paletteBitDepth; }
+void MetadataBaton_SetPaletteBitDepth(MetadataBaton* baton, int val) { baton->paletteBitDepth = val; }
+int MetadataBaton_GetPages(MetadataBaton* baton) { return baton->pages; }
+void MetadataBaton_SetPages(MetadataBaton* baton, int val) { baton->pages = val; }
+int MetadataBaton_GetPageHeight(MetadataBaton* baton) { return baton->pageHeight; }
+void MetadataBaton_SetPageHeight(MetadataBaton* baton, int val) { baton->pageHeight = val; }
+int MetadataBaton_GetLoop(MetadataBaton* baton) { return baton->loop; }
+void MetadataBaton_SetLoop(MetadataBaton* baton, int val) { baton->loop = val; }
+int* MetadataBaton_GetDelay(MetadataBaton* baton) { return baton->delay.data(); }
+void MetadataBaton_SetDelay(MetadataBaton* baton, std::vector<int> val) { baton->delay = val; }
+int MetadataBaton_GetPagePrimary(MetadataBaton* baton) { return baton->pagePrimary; }
+void MetadataBaton_SetPagePrimary(MetadataBaton* baton, int val) { baton->pagePrimary = val; }
+const char* MetadataBaton_GetCompression(MetadataBaton* baton) { return baton->compression.c_str(); }
+void MetadataBaton_SetCompression(MetadataBaton* baton, const char* val) { baton->compression = val; }
+const char* MetadataBaton_GetResolutionUnit(MetadataBaton* baton) { return baton->resolutionUnit.c_str(); }
+void MetadataBaton_SetResolutionUnit(MetadataBaton* baton, const char* val) { baton->resolutionUnit = val; }
+MetadataDimension* MetadataBaton_GetLevels(MetadataBaton* baton) { return baton->levels.data(); }
+void MetadataBaton_SetLevels(MetadataBaton* baton, std::vector<MetadataDimension> val) { baton->levels = val; }
+int MetadataBaton_GetSubifds(MetadataBaton* baton) { return baton->subifds; }
+void MetadataBaton_SetSubifds(MetadataBaton* baton, int val) { baton->subifds = val; }
+double* MetadataBaton_GetBackground(MetadataBaton* baton) { return baton->background.data(); }
+void MetadataBaton_SetBackground(MetadataBaton* baton, std::vector<double> val) { baton->background = val; }
+bool MetadataBaton_GetHasProfile(MetadataBaton* baton) { return baton->hasProfile; }
+void MetadataBaton_SetHasProfile(MetadataBaton* baton, bool val) { baton->hasProfile = val; }
+bool MetadataBaton_GetHasAlpha(MetadataBaton* baton) { return baton->hasAlpha; }
+void MetadataBaton_SetHasAlpha(MetadataBaton* baton, bool val) { baton->hasAlpha = val; }
+int MetadataBaton_GetOrientation(MetadataBaton* baton) { return baton->orientation; }
+void MetadataBaton_SetOrientation(MetadataBaton* baton, int val) { baton->orientation = val; }
+char* MetadataBaton_GetExif(MetadataBaton* baton) { return baton->exif; }
+void MetadataBaton_SetExif(MetadataBaton* baton, char* val) { baton->exif = val; }
+size_t MetadataBaton_GetExifLength(MetadataBaton* baton) { return baton->exifLength; }
+void MetadataBaton_SetExifLength(MetadataBaton* baton, size_t val) { baton->exifLength = val; }
+char* MetadataBaton_GetIcc(MetadataBaton* baton) { return baton->icc; }
+void MetadataBaton_SetIcc(MetadataBaton* baton, char* val) { baton->icc = val; }
+size_t MetadataBaton_GetIccLength(MetadataBaton* baton) { return baton->iccLength; }
+void MetadataBaton_SetIccLength(MetadataBaton* baton, size_t val) { baton->iccLength = val; }
+char* MetadataBaton_GetIptc(MetadataBaton* baton) { return baton->iptc; }
+void MetadataBaton_SetIptc(MetadataBaton* baton, char* val) { baton->iptc = val; }
+size_t MetadataBaton_GetIptcLength(MetadataBaton* baton) { return baton->iptcLength; }
+void MetadataBaton_SetIptcLength(MetadataBaton* baton, size_t val) { baton->iptcLength = val; }
+char* MetadataBaton_GetXmp(MetadataBaton* baton) { return baton->xmp; }
+void MetadataBaton_SetXmp(MetadataBaton* baton, char* val) { baton->xmp = val; }
+size_t MetadataBaton_GetXmpLength(MetadataBaton* baton) { return baton->xmpLength; }
+void MetadataBaton_SetXmpLength(MetadataBaton* baton, size_t val) { baton->xmpLength = val; }
+char* MetadataBaton_GetTifftagPhotoshop(MetadataBaton* baton) { return baton->tifftagPhotoshop; }
+void MetadataBaton_SetTifftagPhotoshop(MetadataBaton* baton, char* val) { baton->tifftagPhotoshop = val; }
+size_t MetadataBaton_GetTifftagPhotoshopLength(MetadataBaton* baton) { return baton->tifftagPhotoshopLength; }
+void MetadataBaton_SetTifftagPhotoshopLength(MetadataBaton* baton, size_t val) { baton->tifftagPhotoshopLength = val; }
+const char* MetadataBaton_GetErr(MetadataBaton* baton) { return baton->err.c_str(); }
+void MetadataBaton_SetErr(MetadataBaton* baton, const char* val) { baton->err = val; }
+
+size_t MetadataBaton_GetDelay_Size(MetadataBaton* baton) { return baton->delay.size(); }
+bool MetadataBaton_GetDelay_Empty(MetadataBaton* baton) { return baton->delay.empty(); }
+size_t MetadataBaton_GetLevels_Size(MetadataBaton* baton) { return baton->levels.size(); }
+bool MetadataBaton_GetLevels_Empty(MetadataBaton* baton) { return baton->levels.empty(); }
+size_t MetadataBaton_GetBackground_Size(MetadataBaton* baton) { return baton->background.size(); }
+bool MetadataBaton_GetBackground_Empty(MetadataBaton* baton) { return baton->background.empty(); }

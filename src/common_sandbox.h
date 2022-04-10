@@ -103,6 +103,8 @@ namespace sharp {
   extern "C" {
     int InputDescriptor_GetAccess(InputDescriptor* input);
     void InputDescriptor_SetAccess(InputDescriptor* input, int value);
+    size_t InputDescriptor_GetBufferLength(InputDescriptor* input);
+    void InputDescriptor_SetBufferLength(InputDescriptor* input, size_t value);
   }
 
   enum class ImageType {
