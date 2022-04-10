@@ -90,7 +90,8 @@
     'sources': [
       'src/common_host.cc',
       'src/common_sandbox.cc',
-      'src/metadata.cc',
+      'src/metadata_host.cc',
+      'src/metadata_sandbox.cc',
       'src/stats.cc',
       'src/operations.cc',
       'src/pipeline_host.cc',

@@ -15,7 +15,7 @@
 #include <napi.h>
 #include <vips/vips8>
 
-#include "metadata.h"
+#include "metadata_host.h"
 #include "pipeline_host.h"
 #include "utilities.h"
 #include "stats.h"
