@@ -12,11 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef SRC_STATS_H_
-#define SRC_STATS_H_
+#ifndef SRC_STATS_SANDBOX_H_
+#define SRC_STATS_SANDBOX_H_
 
 #include <string>
-#include <napi.h>
 
 #include "./common_sandbox.h"
 
@@ -65,6 +64,11 @@ struct StatsBaton {
     {}
 };
 
-Napi::Value stats(const Napi::CallbackInfo& info);
+extern "C" {
+  void StatsWorkerExecute(StatsBaton* baton);
 
-#endif  // SRC_STATS_H_
+  StatsBaton* CreateStatsBaton();
+  void DestroyStatsBaton(StatsBaton* baton);
+}
+
+#endif  // SRC_STATS_SANDBOX_H_
