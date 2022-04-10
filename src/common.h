@@ -18,8 +18,9 @@
 #include <string>
 #include <tuple>
 #include <vector>
+#include <functional>
 
-#include <napi.h>
+// #include <napi.h>
 #include <vips/vips8>
 
 // Verify platform and compiler compatibility
@@ -97,22 +98,6 @@ namespace sharp {
       createNoiseMean(0.0),
       createNoiseSigma(0.0) {}
   };
-
-  // Convenience methods to access the attributes of a Napi::Object
-  bool HasAttr(Napi::Object obj, std::string attr);
-  std::string AttrAsStr(Napi::Object obj, std::string attr);
-  std::string AttrAsStr(Napi::Object obj, unsigned int const attr);
-  uint32_t AttrAsUint32(Napi::Object obj, std::string attr);
-  int32_t AttrAsInt32(Napi::Object obj, std::string attr);
-  int32_t AttrAsInt32(Napi::Object obj, unsigned int const attr);
-  double AttrAsDouble(Napi::Object obj, std::string attr);
-  double AttrAsDouble(Napi::Object obj, unsigned int const attr);
-  bool AttrAsBool(Napi::Object obj, std::string attr);
-  std::vector<double> AttrAsVectorOfDouble(Napi::Object obj, std::string attr);
-  std::vector<int32_t> AttrAsInt32Vector(Napi::Object obj, std::string attr);
-
-  // Create an InputDescriptor instance from a Napi::Object describing an input image
-  InputDescriptor* CreateInputDescriptor(Napi::Object input);
 
   enum class ImageType {
     JPEG,

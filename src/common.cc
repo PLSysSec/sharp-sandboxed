@@ -24,6 +24,7 @@
 #include <vips/vips8>
 
 #include "common.h"
+#include "common_host.h"
 
 using vips::VImage;
 

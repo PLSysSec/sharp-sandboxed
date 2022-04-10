@@ -93,11 +93,13 @@
       'src/stats.cc',
       'src/operations.cc',
       'src/pipeline.cc',
+      'src/pipeline_sandbox.cc',
       'src/utilities.cc',
       'src/sharp.cc'
     ],
     'include_dirs': [
       '<!(node -p "require(\'node-addon-api\').include_dir")',
+      '../rlbox/code/include'
     ],
     'conditions': [
       ['use_global_libvips == "true"', {
@@ -171,7 +173,7 @@
       }]
     ],
     'cflags_cc': [
-      '-std=c++0x',
+      '-std=c++17',
       '-fexceptions',
       '-Wall',
       '-Os'

@@ -20,6 +20,7 @@
 #include <vips/vips8>
 
 #include "common.h"
+#include "common_host.h"
 #include "stats.h"
 
 class StatsWorker : public Napi::AsyncWorker {
