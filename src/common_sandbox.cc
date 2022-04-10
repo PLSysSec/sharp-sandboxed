@@ -28,6 +28,11 @@ using vips::VImage;
 
 namespace sharp {
 
+  extern "C" {
+    int InputDescriptor_GetAccess(InputDescriptor* input) { return (int) input->access; }
+    void InputDescriptor_SetAccess(InputDescriptor* input, int value) { input->access = (VipsAccess) value; }
+  }
+
   // Filename extension checkers
   static bool EndsWith(std::string const &str, std::string const &end) {
     return str.length() >= end.length() && 0 == str.compare(str.length() - end.length(), end.length(), end);

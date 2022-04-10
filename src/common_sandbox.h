@@ -100,6 +100,11 @@ namespace sharp {
       createNoiseSigma(0.0) {}
   };
 
+  extern "C" {
+    int InputDescriptor_GetAccess(InputDescriptor* input);
+    void InputDescriptor_SetAccess(InputDescriptor* input, int value);
+  }
+
   enum class ImageType {
     JPEG,
     PNG,
