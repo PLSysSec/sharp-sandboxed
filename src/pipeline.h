@@ -23,7 +23,7 @@
 #include <napi.h>
 #include <vips/vips8>
 
-#include "./common.h"
+#include "./common_sandbox.h"
 
 Napi::Value pipeline(const Napi::CallbackInfo& info);
 

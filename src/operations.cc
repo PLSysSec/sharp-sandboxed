@@ -20,7 +20,7 @@
 
 #include <vips/vips8>
 
-#include "common.h"
+#include "common_sandbox.h"
 #include "operations.h"
 
 using vips::VImage;

@@ -88,11 +88,12 @@
       ]
     },
     'sources': [
-      'src/common.cc',
+      'src/common_host.cc',
+      'src/common_sandbox.cc',
       'src/metadata.cc',
       'src/stats.cc',
       'src/operations.cc',
-      'src/pipeline.cc',
+      'src/pipeline_host.cc',
       'src/pipeline_sandbox.cc',
       'src/utilities.cc',
       'src/sharp.cc'

@@ -19,7 +19,7 @@
 #include <napi.h>
 #include <vips/vips8>
 
-#include "common.h"
+#include "common_sandbox.h"
 #include "common_host.h"
 #include "stats.h"
 

@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef SRC_COMMON_H_
-#define SRC_COMMON_H_
+#ifndef SRC_COMMON_SANDBOX_H_
+#define SRC_COMMON_SANDBOX_H_
 
 #include <string>
 #include <tuple>
@@ -334,4 +334,4 @@ namespace sharp {
 
 }  // namespace sharp
 
-#endif  // SRC_COMMON_H_
+#endif  // SRC_COMMON_SANDBOX_H_

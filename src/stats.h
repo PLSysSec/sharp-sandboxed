@@ -18,7 +18,7 @@
 #include <string>
 #include <napi.h>
 
-#include "./common.h"
+#include "./common_sandbox.h"
 
 struct ChannelStats {
   // stats per channel

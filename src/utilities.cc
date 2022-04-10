@@ -19,7 +19,7 @@
 #include <vips/vips8>
 #include <vips/vector.h>
 
-#include "common.h"
+#include "common_sandbox.h"
 #include "operations.h"
 #include "utilities.h"
 

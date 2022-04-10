@@ -15,7 +15,7 @@
 #include <napi.h>
 #include <vips/vips8>
 
-#include "common.h"
+#include "common_sandbox.h"
 #include "metadata.h"
 #include "pipeline.h"
 #include "utilities.h"
