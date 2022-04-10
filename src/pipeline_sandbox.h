@@ -22,8 +22,11 @@
 
 #include <vips/vips8>
 
-#include "./common_sandbox.h"
+#include "canvas.h"
 
+namespace sharp {
+  struct InputDescriptor;
+}
 struct Composite {
   sharp::InputDescriptor *input;
   VipsBlendMode mode;

@@ -1,4 +1,5 @@
 #include "metadata_sandbox.h"
+#include "common_sandbox.h"
 
 #include <atomic>
 

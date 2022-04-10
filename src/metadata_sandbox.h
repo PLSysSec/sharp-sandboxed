@@ -2,8 +2,11 @@
 #define SRC_METADATA_SANDBOX_H_
 
 #include <string>
+#include <vector>
 
-#include "./common_sandbox.h"
+namespace sharp {
+  struct InputDescriptor;
+}
 
 struct MetadataBaton {
   // Input

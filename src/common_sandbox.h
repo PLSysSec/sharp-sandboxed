@@ -22,6 +22,8 @@
 
 #include <vips/vips8>
 
+#include "canvas.h"
+
 // Verify platform and compiler compatibility
 
 #if (VIPS_MAJOR_VERSION < 8) || \
@@ -117,14 +119,6 @@ namespace sharp {
     RAW,
     UNKNOWN,
     MISSING
-  };
-
-  enum class Canvas {
-      CROP,
-      EMBED,
-      MAX,
-      MIN,
-      IGNORE_ASPECT
   };
 
   // Filename extension checkers
@@ -227,21 +221,6 @@ namespace sharp {
     Check the proposed format supports the current dimensions.
   */
   void AssertImageTypeDimensions(VImage image, ImageType const imageType);
-
-  /*
-    Called when a Buffer undergoes GC, required to support mixed runtime libraries in Windows
-  */
-  extern std::function<void(void*, char*)> FreeCallback;
-
-  /*
-    Called with warnings from the glib-registered "VIPS" domain
-  */
-  void VipsWarningCallback(char const* log_domain, GLogLevelFlags log_level, char const* message, void* ignore);
-
-  /*
-    Pop the oldest warning message from the queue
-  */
-  std::string VipsWarningPop();
 
   /*
     Attach an event listener for progress updates, used to detect timeout

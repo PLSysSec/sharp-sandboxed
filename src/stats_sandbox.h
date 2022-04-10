@@ -16,8 +16,11 @@
 #define SRC_STATS_SANDBOX_H_
 
 #include <string>
+#include <vector>
 
-#include "./common_sandbox.h"
+namespace sharp {
+  struct InputDescriptor;
+}
 
 struct ChannelStats {
   // stats per channel

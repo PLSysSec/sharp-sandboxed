@@ -27,8 +27,8 @@
 #include <vips/vips8>
 #include <napi.h>
 
-#include "common_sandbox.h"
 #include "common_host.h"
+#include "common_sandbox.h"
 #include "operations.h"
 #include "pipeline_host.h"
 #include "pipeline_sandbox.h"

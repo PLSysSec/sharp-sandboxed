@@ -1,6 +1,7 @@
 #include <vips/vips8>
 
 #include "stats_sandbox.h"
+#include "common_sandbox.h"
 
 
 static const int STAT_MIN_INDEX = 0;

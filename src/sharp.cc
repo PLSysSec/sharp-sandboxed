@@ -19,7 +19,7 @@
 #include "pipeline_host.h"
 #include "utilities.h"
 #include "stats_host.h"
-#include "common_sandbox.h"
+#include "common_host.h"
 
 static void* sharp_vips_init(void*) {
   g_setenv("VIPS_MIN_STACK_SIZE", "2m", FALSE);

@@ -138,9 +138,43 @@ namespace sharp {
     return descriptor;
   }
 
-// How many tasks are in the queue?
+  // How many tasks are in the queue?
   volatile int counterQueue = 0;
 
   // How many tasks are being processed?
   volatile int counterProcess = 0;
+
+  /*
+    Called when a Buffer undergoes GC, required to support mixed runtime libraries in Windows
+  */
+  std::function<void(void*, char*)> FreeCallback = [](void*, char* data) {
+    g_free(data);
+  };
+
+  /*
+    Temporary buffer of warnings
+  */
+  std::queue<std::string> vipsWarnings;
+  std::mutex vipsWarningsMutex;
+
+  /*
+    Called with warnings from the glib-registered "VIPS" domain
+  */
+  void VipsWarningCallback(char const* log_domain, GLogLevelFlags log_level, char const* message, void* ignore) {
+    std::lock_guard<std::mutex> lock(vipsWarningsMutex);
+    vipsWarnings.emplace(message);
+  }
+
+  /*
+    Pop the oldest warning message from the queue
+  */
+  std::string VipsWarningPop() {
+    std::string warning;
+    std::lock_guard<std::mutex> lock(vipsWarningsMutex);
+    if (!vipsWarnings.empty()) {
+      warning = vipsWarnings.front();
+      vipsWarnings.pop();
+    }
+    return warning;
+  }
 }
