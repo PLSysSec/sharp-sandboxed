@@ -47,40 +47,43 @@ class StatsWorker : public Napi::AsyncWorker {
       warning = sharp::VipsWarningPop();
     }
 
-    if (baton->err.empty()) {
+    if (StatsBaton_GetErr(baton) == std::string("")) {
       // Stats Object
       Napi::Object info = Napi::Object::New(env);
       Napi::Array channels = Napi::Array::New(env);
 
-      std::vector<ChannelStats>::iterator it;
-      int i = 0;
-      for (it = baton->channelStats.begin(); it < baton->channelStats.end(); it++, i++) {
+      size_t baton_channelStats_size = StatsBaton_GetChannelStats_Size(baton);
+      ChannelStats* baton_channelStats = StatsBaton_GetChannelStats(baton);
+
+      for (size_t i = 0; i < baton_channelStats_size; i++) {
+        ChannelStats& c = baton_channelStats[i];
         Napi::Object channelStat = Napi::Object::New(env);
-        channelStat.Set("min", it->min);
-        channelStat.Set("max", it->max);
-        channelStat.Set("sum", it->sum);
-        channelStat.Set("squaresSum", it->squaresSum);
-        channelStat.Set("mean", it->mean);
-        channelStat.Set("stdev", it->stdev);
-        channelStat.Set("minX", it->minX);
-        channelStat.Set("minY", it->minY);
-        channelStat.Set("maxX", it->maxX);
-        channelStat.Set("maxY", it->maxY);
+        channelStat.Set("min", c.min);
+        channelStat.Set("max", c.max);
+        channelStat.Set("sum", c.sum);
+        channelStat.Set("squaresSum", c.squaresSum);
+        channelStat.Set("mean", c.mean);
+        channelStat.Set("stdev", c.stdev);
+        channelStat.Set("minX", c.minX);
+        channelStat.Set("minY", c.minY);
+        channelStat.Set("maxX", c.maxX);
+        channelStat.Set("maxY", c.maxY);
         channels.Set(i, channelStat);
       }
 
       info.Set("channels", channels);
-      info.Set("isOpaque", baton->isOpaque);
-      info.Set("entropy", baton->entropy);
-      info.Set("sharpness", baton->sharpness);
+      info.Set("isOpaque", StatsBaton_GetIsOpaque(baton));
+      info.Set("entropy", StatsBaton_GetEntropy(baton));
+      info.Set("sharpness", StatsBaton_GetSharpness(baton));
       Napi::Object dominant = Napi::Object::New(env);
-      dominant.Set("r", baton->dominantRed);
-      dominant.Set("g", baton->dominantGreen);
-      dominant.Set("b", baton->dominantBlue);
+      dominant.Set("r", StatsBaton_GetDominantRed(baton));
+      dominant.Set("g", StatsBaton_GetDominantGreen(baton));
+      dominant.Set("b", StatsBaton_GetDominantBlue(baton));
       info.Set("dominant", dominant);
       Callback().MakeCallback(Receiver().Value(), { env.Null(), info });
     } else {
-      Callback().MakeCallback(Receiver().Value(), { Napi::Error::New(env, baton->err).Value() });
+      std::string errString = StatsBaton_GetErr(baton);
+      Callback().MakeCallback(Receiver().Value(), { Napi::Error::New(env, errString).Value() });
     }
 
     DestroyStatsBaton(baton);
@@ -100,7 +103,7 @@ Napi::Value stats(const Napi::CallbackInfo& info) {
   Napi::Object options = info[0].As<Napi::Object>();
 
   // Input
-  baton->input = sharp::CreateInputDescriptor(options.Get("input").As<Napi::Object>());
+  StatsBaton_SetInput(baton, sharp::CreateInputDescriptor(options.Get("input").As<Napi::Object>()));
 
   // Function to notify of libvips warnings
   Napi::Function debuglog = options.Get("debuglog").As<Napi::Function>();

@@ -72,6 +72,29 @@ extern "C" {
 
   StatsBaton* CreateStatsBaton();
   void DestroyStatsBaton(StatsBaton* baton);
+
+  sharp::InputDescriptor* StatsBaton_GetInput(StatsBaton* baton);
+  void StatsBaton_SetInput(StatsBaton* baton, sharp::InputDescriptor* val);
+  ChannelStats* StatsBaton_GetChannelStats(StatsBaton* baton);
+  void StatsBaton_SetChannelStats(StatsBaton* baton, std::vector<ChannelStats> val);
+  bool StatsBaton_GetIsOpaque(StatsBaton* baton);
+  void StatsBaton_SetIsOpaque(StatsBaton* baton, bool val);
+  double StatsBaton_GetEntropy(StatsBaton* baton);
+  void StatsBaton_SetEntropy(StatsBaton* baton, double val);
+  double StatsBaton_GetSharpness(StatsBaton* baton);
+  void StatsBaton_SetSharpness(StatsBaton* baton, double val);
+  int StatsBaton_GetDominantRed(StatsBaton* baton);
+  void StatsBaton_SetDominantRed(StatsBaton* baton, int val);
+  int StatsBaton_GetDominantGreen(StatsBaton* baton);
+  void StatsBaton_SetDominantGreen(StatsBaton* baton, int val);
+  int StatsBaton_GetDominantBlue(StatsBaton* baton);
+  void StatsBaton_SetDominantBlue(StatsBaton* baton, int val);
+  const char* StatsBaton_GetErr(StatsBaton* baton);
+  void StatsBaton_SetErr(StatsBaton* baton, const char* val);
+
+  size_t StatsBaton_GetChannelStats_Size(StatsBaton* baton);
+  bool StatsBaton_GetChannelStats_Empty(StatsBaton* baton);
+
 }
 
 #endif  // SRC_STATS_SANDBOX_H_

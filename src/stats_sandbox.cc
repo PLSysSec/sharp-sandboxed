@@ -91,3 +91,25 @@ void DestroyStatsBaton(StatsBaton* baton) {
   delete baton->input;
   delete baton;
 }
+
+sharp::InputDescriptor* StatsBaton_GetInput(StatsBaton* baton) { return baton->input; }
+void StatsBaton_SetInput(StatsBaton* baton, sharp::InputDescriptor* val) { baton->input = val; }
+ChannelStats* StatsBaton_GetChannelStats(StatsBaton* baton) { return baton->channelStats.data(); }
+void StatsBaton_SetChannelStats(StatsBaton* baton, std::vector<ChannelStats> val) { baton->channelStats = val; }
+bool StatsBaton_GetIsOpaque(StatsBaton* baton) { return baton->isOpaque; }
+void StatsBaton_SetIsOpaque(StatsBaton* baton, bool val) { baton->isOpaque = val; }
+double StatsBaton_GetEntropy(StatsBaton* baton) { return baton->entropy; }
+void StatsBaton_SetEntropy(StatsBaton* baton, double val) { baton->entropy = val; }
+double StatsBaton_GetSharpness(StatsBaton* baton) { return baton->sharpness; }
+void StatsBaton_SetSharpness(StatsBaton* baton, double val) { baton->sharpness = val; }
+int StatsBaton_GetDominantRed(StatsBaton* baton) { return baton->dominantRed; }
+void StatsBaton_SetDominantRed(StatsBaton* baton, int val) { baton->dominantRed = val; }
+int StatsBaton_GetDominantGreen(StatsBaton* baton) { return baton->dominantGreen; }
+void StatsBaton_SetDominantGreen(StatsBaton* baton, int val) { baton->dominantGreen = val; }
+int StatsBaton_GetDominantBlue(StatsBaton* baton) { return baton->dominantBlue; }
+void StatsBaton_SetDominantBlue(StatsBaton* baton, int val) { baton->dominantBlue = val; }
+const char* StatsBaton_GetErr(StatsBaton* baton) { return baton->err.c_str(); }
+void StatsBaton_SetErr(StatsBaton* baton, const char* val) { baton->err = val; }
+
+size_t StatsBaton_GetChannelStats_Size(StatsBaton* baton) { return baton->channelStats.size(); }
+bool StatsBaton_GetChannelStats_Empty(StatsBaton* baton) { return baton->channelStats.empty(); }
