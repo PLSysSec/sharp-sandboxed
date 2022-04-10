@@ -30,6 +30,9 @@ class MetadataWorker : public Napi::AsyncWorker {
   ~MetadataWorker() {}
 
   void Execute() {
+    // Decrement queued task counter
+    g_atomic_int_dec_and_test(&sharp::counterQueue);
+
     MetadataWorkerExecute(baton);
   }
 

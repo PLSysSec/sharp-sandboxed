@@ -137,4 +137,10 @@ namespace sharp {
     descriptor->unlimited = AttrAsBool(input, "unlimited");
     return descriptor;
   }
+
+// How many tasks are in the queue?
+  volatile int counterQueue = 0;
+
+  // How many tasks are being processed?
+  volatile int counterProcess = 0;
 }

@@ -20,6 +20,7 @@
 #include <vips/vector.h>
 
 #include "common_sandbox.h"
+#include "common_host.h"
 #include "operations.h"
 #include "utilities.h"
 

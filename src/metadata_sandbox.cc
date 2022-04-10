@@ -3,9 +3,6 @@
 #include <atomic>
 
 void MetadataWorkerExecute(MetadataBaton* baton) {
-  // Decrement queued task counter
-  g_atomic_int_dec_and_test(&sharp::counterQueue);
-
   vips::VImage image;
   sharp::ImageType imageType = sharp::ImageType::UNKNOWN;
   try {

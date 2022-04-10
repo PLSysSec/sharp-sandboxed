@@ -39,6 +39,13 @@ struct InputDescriptor;
 // Create an InputDescriptor instance from a Napi::Object describing an input image
 InputDescriptor* CreateInputDescriptor(Napi::Object input);
 
+
+// How many tasks are in the queue?
+extern volatile int counterQueue;
+
+// How many tasks are being processed?
+extern volatile int counterProcess;
+
 }
 
 #endif  // SRC_COMMON_HOST_H_

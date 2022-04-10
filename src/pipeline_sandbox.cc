@@ -80,11 +80,6 @@ static void Error() {
 
 void PipelineWorkerExecute(PipelineBaton *baton) {
 
-  // Decrement queued task counter
-  g_atomic_int_dec_and_test(&sharp::counterQueue);
-  // Increment processing task counter
-  g_atomic_int_inc(&sharp::counterProcess);
-
   try {
     // Open input
     vips::VImage image;

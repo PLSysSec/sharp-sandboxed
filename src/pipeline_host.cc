@@ -59,6 +59,11 @@ class PipelineWorker : public Napi::AsyncWorker {
 
   // libuv worker
   void Execute() {
+    // Decrement queued task counter
+    g_atomic_int_dec_and_test(&sharp::counterQueue);
+    // Increment processing task counter
+    g_atomic_int_inc(&sharp::counterProcess);
+
     PipelineWorkerExecute(baton);
   }
 
