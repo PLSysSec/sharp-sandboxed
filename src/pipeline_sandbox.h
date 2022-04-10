@@ -12,20 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef SRC_PIPELINE_H_
-#define SRC_PIPELINE_H_
+#ifndef SRC_PIPELINE_SANDBOX_H_
+#define SRC_PIPELINE_SANDBOX_H_
 
 #include <memory>
 #include <string>
 #include <vector>
 #include <unordered_map>
 
-#include <napi.h>
 #include <vips/vips8>
 
 #include "./common_sandbox.h"
-
-Napi::Value pipeline(const Napi::CallbackInfo& info);
 
 struct Composite {
   sharp::InputDescriptor *input;
@@ -346,4 +343,8 @@ struct PipelineBaton {
     tileDepth(VIPS_FOREIGN_DZ_DEPTH_LAST) {}
 };
 
-#endif  // SRC_PIPELINE_H_
+extern "C" {
+void PipelineWorkerExecute(PipelineBaton *baton);
+}
+
+#endif  // SRC_PIPELINE_SANDBOX_H_

@@ -20,11 +20,9 @@
 #include <map>
 #include <mutex>  // NOLINT(build/c++11)
 
-#include <napi.h>
 #include <vips/vips8>
 
 #include "common_sandbox.h"
-#include "common_host.h"
 
 using vips::VImage;
 

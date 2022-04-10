@@ -3,12 +3,7 @@
 
 #include "common_sandbox.h"
 #include "operations.h"
-#include "pipeline.h"
-
-extern "C" {
-void PipelineWorkerExecute(PipelineBaton *baton);
-}
-
+#include "pipeline_sandbox.h"
 
 static void MultiPageUnsupported(int const pages, std::string op) {
   if (pages > 1) {

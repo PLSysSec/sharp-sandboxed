@@ -30,7 +30,8 @@
 #include "common_sandbox.h"
 #include "common_host.h"
 #include "operations.h"
-#include "pipeline.h"
+#include "pipeline_host.h"
+#include "pipeline_sandbox.h"
 
 #if defined(WIN32)
 #define STAT64_STRUCT __stat64
@@ -45,10 +46,6 @@
 #define STAT64_STRUCT stat64
 #define STAT64_FUNCTION stat64
 #endif
-
-extern "C" {
-void PipelineWorkerExecute(PipelineBaton *baton);
-}
 
 class PipelineWorker : public Napi::AsyncWorker {
  public:

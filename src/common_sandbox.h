@@ -20,7 +20,6 @@
 #include <vector>
 #include <functional>
 
-// #include <napi.h>
 #include <vips/vips8>
 
 // Verify platform and compiler compatibility
