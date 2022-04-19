@@ -19,6 +19,8 @@
 
 #include <napi.h>
 
+struct InputDescriptor;
+
 namespace sharp {
 
   // Convenience methods to access the attributes of a Napi::Object
@@ -33,8 +35,6 @@ namespace sharp {
   bool AttrAsBool(Napi::Object obj, std::string attr);
   std::vector<double> AttrAsVectorOfDouble(Napi::Object obj, std::string attr);
   std::vector<int32_t> AttrAsInt32Vector(Napi::Object obj, std::string attr);
-
-  struct InputDescriptor;
 
   // Create an InputDescriptor instance from a Napi::Object describing an input image
   InputDescriptor* CreateInputDescriptor(Napi::Object input);

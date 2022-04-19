@@ -19,7 +19,7 @@ void StatsWorkerExecute(StatsBaton* baton) {
   vips::VImage image;
   sharp::ImageType imageType = sharp::ImageType::UNKNOWN;
   try {
-    std::tie(image, imageType) = OpenInput(baton->input);
+    std::tie(image, imageType) = sharp::OpenInput(baton->input);
   } catch (vips::VError const &err) {
     (baton->err).append(err.what());
   }
@@ -92,8 +92,8 @@ void DestroyStatsBaton(StatsBaton* baton) {
   delete baton;
 }
 
-sharp::InputDescriptor* StatsBaton_GetInput(StatsBaton* baton) { return baton->input; }
-void StatsBaton_SetInput(StatsBaton* baton, sharp::InputDescriptor* val) { baton->input = val; }
+InputDescriptor* StatsBaton_GetInput(StatsBaton* baton) { return baton->input; }
+void StatsBaton_SetInput(StatsBaton* baton, InputDescriptor* val) { baton->input = val; }
 ChannelStats* StatsBaton_GetChannelStats(StatsBaton* baton) { return baton->channelStats.data(); }
 void StatsBaton_SetChannelStats(StatsBaton* baton, std::vector<ChannelStats> val) { baton->channelStats = val; }
 bool StatsBaton_GetIsOpaque(StatsBaton* baton) { return baton->isOpaque; }

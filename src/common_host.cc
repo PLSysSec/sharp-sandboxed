@@ -77,7 +77,7 @@ namespace sharp {
 
   // Create an InputDescriptor instance from a Napi::Object describing an input image
   InputDescriptor* CreateInputDescriptor(Napi::Object input) {
-    InputDescriptor *descriptor = CreateInputDescriptor();
+    InputDescriptor *descriptor = CreateEmptyInputDescriptor();
     if (HasAttr(input, "file")) {
       InputDescriptor_SetFile(descriptor, AttrAsStr(input, "file").c_str());
     } else if (HasAttr(input, "buffer")) {

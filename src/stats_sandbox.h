@@ -18,9 +18,7 @@
 #include <string>
 #include <vector>
 
-namespace sharp {
-  struct InputDescriptor;
-}
+struct InputDescriptor;
 
 struct ChannelStats {
   // stats per channel
@@ -43,7 +41,7 @@ struct ChannelStats {
 
 struct StatsBaton {
   // Input
-  sharp::InputDescriptor *input;
+  InputDescriptor *input;
 
   // Output
   std::vector<ChannelStats> channelStats;
@@ -73,8 +71,8 @@ extern "C" {
   StatsBaton* CreateStatsBaton();
   void DestroyStatsBaton(StatsBaton* baton);
 
-  sharp::InputDescriptor* StatsBaton_GetInput(StatsBaton* baton);
-  void StatsBaton_SetInput(StatsBaton* baton, sharp::InputDescriptor* val);
+  InputDescriptor* StatsBaton_GetInput(StatsBaton* baton);
+  void StatsBaton_SetInput(StatsBaton* baton, InputDescriptor* val);
   ChannelStats* StatsBaton_GetChannelStats(StatsBaton* baton);
   void StatsBaton_SetChannelStats(StatsBaton* baton, std::vector<ChannelStats> val);
   bool StatsBaton_GetIsOpaque(StatsBaton* baton);

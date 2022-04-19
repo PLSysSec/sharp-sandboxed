@@ -7,7 +7,7 @@ void MetadataWorkerExecute(MetadataBaton* baton) {
   vips::VImage image;
   sharp::ImageType imageType = sharp::ImageType::UNKNOWN;
   try {
-    std::tie(image, imageType) = OpenInput(baton->input);
+    std::tie(image, imageType) = sharp::OpenInput(baton->input);
   } catch (vips::VError const &err) {
     (baton->err).append(err.what());
   }
@@ -129,8 +129,8 @@ void DestroyMetadataBaton(MetadataBaton* baton) {
   delete baton;
 }
 
-sharp::InputDescriptor* MetadataBaton_GetInput(MetadataBaton* baton) { return baton->input; }
-void MetadataBaton_SetInput(MetadataBaton* baton, sharp::InputDescriptor* val) { baton->input = val; }
+InputDescriptor* MetadataBaton_GetInput(MetadataBaton* baton) { return baton->input; }
+void MetadataBaton_SetInput(MetadataBaton* baton, InputDescriptor* val) { baton->input = val; }
 const char* MetadataBaton_GetFormat(MetadataBaton* baton) { return baton->format.c_str(); }
 void MetadataBaton_SetFormat(MetadataBaton* baton, const char* val) { baton->format = val; }
 int MetadataBaton_GetWidth(MetadataBaton* baton) { return baton->width; }

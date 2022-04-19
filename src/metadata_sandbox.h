@@ -4,9 +4,7 @@
 #include <string>
 #include <vector>
 
-namespace sharp {
-  struct InputDescriptor;
-}
+struct InputDescriptor;
 
 struct MetadataDimension {
     int width;
@@ -14,7 +12,7 @@ struct MetadataDimension {
 };
 struct MetadataBaton {
   // Input
-  sharp::InputDescriptor *input;
+  InputDescriptor *input;
   // Output
   std::string format;
   int width;
@@ -85,8 +83,8 @@ extern "C" {
   MetadataBaton* CreateMetadataBaton();
   void DestroyMetadataBaton(MetadataBaton* baton);
 
-  sharp::InputDescriptor* MetadataBaton_GetInput(MetadataBaton* baton);
-  void MetadataBaton_SetInput(MetadataBaton* baton, sharp::InputDescriptor* val);
+  InputDescriptor* MetadataBaton_GetInput(MetadataBaton* baton);
+  void MetadataBaton_SetInput(MetadataBaton* baton, InputDescriptor* val);
   const char* MetadataBaton_GetFormat(MetadataBaton* baton);
   void MetadataBaton_SetFormat(MetadataBaton* baton, const char* val);
   int MetadataBaton_GetWidth(MetadataBaton* baton);

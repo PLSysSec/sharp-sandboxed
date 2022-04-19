@@ -26,67 +26,66 @@
 
 using vips::VImage;
 
+extern "C" {
+
+  InputDescriptor* CreateEmptyInputDescriptor() { return new InputDescriptor(); }
+  void DestroyInputDescriptor(InputDescriptor* input) { delete input; }
+
+  const char* InputDescriptor_GetName(InputDescriptor* input) { return input->name.c_str(); }
+  void InputDescriptor_SetName(InputDescriptor* input, const char* val) { input->name = val; }
+  const char* InputDescriptor_GetFile(InputDescriptor* input) { return input->file.c_str(); }
+  void InputDescriptor_SetFile(InputDescriptor* input, const char* val) { input->file = val; }
+  char* InputDescriptor_GetBuffer(InputDescriptor* input) { return input->buffer; }
+  void InputDescriptor_SetBuffer(InputDescriptor* input, char* val) { input->buffer = val; }
+  bool InputDescriptor_GetFailOnError(InputDescriptor* input) { return input->failOnError; }
+  void InputDescriptor_SetFailOnError(InputDescriptor* input, bool val) { input->failOnError = val; }
+  int InputDescriptor_GetLimitInputPixels(InputDescriptor* input) { return input->limitInputPixels; }
+  void InputDescriptor_SetLimitInputPixels(InputDescriptor* input, int val) { input->limitInputPixels = val; }
+  bool InputDescriptor_GetUnlimited(InputDescriptor* input) { return input->unlimited; }
+  void InputDescriptor_SetUnlimited(InputDescriptor* input, bool val) { input->unlimited = val; }
+  int InputDescriptor_GetAccess(InputDescriptor* input) { return (int) input->access; }
+  void InputDescriptor_SetAccess(InputDescriptor* input, int val) { input->access = (VipsAccess) val; }
+  size_t InputDescriptor_GetBufferLength(InputDescriptor* input) { return input->bufferLength; }
+  void InputDescriptor_SetBufferLength(InputDescriptor* input, size_t val) { input->bufferLength = val; }
+  bool InputDescriptor_GetIsBuffer(InputDescriptor* input) { return input->isBuffer; }
+  void InputDescriptor_SetIsBuffer(InputDescriptor* input, bool val) { input->isBuffer = val; }
+  double InputDescriptor_GetDensity(InputDescriptor* input) { return input->density; }
+  void InputDescriptor_SetDensity(InputDescriptor* input, double val) { input->density = val; }
+  int InputDescriptor_GetRawDepth(InputDescriptor* input) { return (int) input->rawDepth; }
+  void InputDescriptor_SetRawDepth(InputDescriptor* input, int val) { input->rawDepth = (VipsBandFormat) val; }
+  int InputDescriptor_GetRawChannels(InputDescriptor* input) { return input->rawChannels; }
+  void InputDescriptor_SetRawChannels(InputDescriptor* input, int val) { input->rawChannels = val; }
+  int InputDescriptor_GetRawWidth(InputDescriptor* input) { return input->rawWidth; }
+  void InputDescriptor_SetRawWidth(InputDescriptor* input, int val) { input->rawWidth = val; }
+  int InputDescriptor_GetRawHeight(InputDescriptor* input) { return input->rawHeight; }
+  void InputDescriptor_SetRawHeight(InputDescriptor* input, int val) { input->rawHeight = val; }
+  bool InputDescriptor_GetRawPremultiplied(InputDescriptor* input) { return input->rawPremultiplied; }
+  void InputDescriptor_SetRawPremultiplied(InputDescriptor* input, bool val) { input->rawPremultiplied = val; }
+  int InputDescriptor_GetPages(InputDescriptor* input) { return input->pages; }
+  void InputDescriptor_SetPages(InputDescriptor* input, int val) { input->pages = val; }
+  int InputDescriptor_GetPage(InputDescriptor* input) { return input->page; }
+  void InputDescriptor_SetPage(InputDescriptor* input, int val) { input->page = val; }
+  int InputDescriptor_GetLevel(InputDescriptor* input) { return input->level; }
+  void InputDescriptor_SetLevel(InputDescriptor* input, int val) { input->level = val; }
+  int InputDescriptor_GetSubifd(InputDescriptor* input) { return input->subifd; }
+  void InputDescriptor_SetSubifd(InputDescriptor* input, int val) { input->subifd = val; }
+  int InputDescriptor_GetCreateChannels(InputDescriptor* input) { return input->createChannels; }
+  void InputDescriptor_SetCreateChannels(InputDescriptor* input, int val) { input->createChannels = val; }
+  int InputDescriptor_GetCreateWidth(InputDescriptor* input) { return input->createWidth; }
+  void InputDescriptor_SetCreateWidth(InputDescriptor* input, int val) { input->createWidth = val; }
+  int InputDescriptor_GetCreateHeight(InputDescriptor* input) { return input->createHeight; }
+  void InputDescriptor_SetCreateHeight(InputDescriptor* input, int val) { input->createHeight = val; }
+  double* InputDescriptor_GetCreateBackground(InputDescriptor* input) { return input->createBackground.data(); }
+  void InputDescriptor_SetCreateBackground(InputDescriptor* input, double* val, size_t count) { input->createBackground = std::vector<double>(val, val + count); }
+  const char* InputDescriptor_GetCreateNoiseType(InputDescriptor* input) { return input->createNoiseType.c_str(); }
+  void InputDescriptor_SetCreateNoiseType(InputDescriptor* input, const char* val) { input->createNoiseType = val; }
+  double InputDescriptor_GetCreateNoiseMean(InputDescriptor* input) { return input->createNoiseMean; }
+  void InputDescriptor_SetCreateNoiseMean(InputDescriptor* input, double val) { input->createNoiseMean = val; }
+  double InputDescriptor_GetCreateNoiseSigma(InputDescriptor* input) { return input->createNoiseSigma; }
+  void InputDescriptor_SetCreateNoiseSigma(InputDescriptor* input, double val) { input->createNoiseSigma = val; }
+}
+
 namespace sharp {
-
-  extern "C" {
-
-    InputDescriptor* CreateInputDescriptor() { return new InputDescriptor(); }
-    void DestroyInputDescriptor(InputDescriptor* input) { delete input; }
-
-    const char* InputDescriptor_GetName(InputDescriptor* input) { return input->name.c_str(); }
-    void InputDescriptor_SetName(InputDescriptor* input, const char* val) { input->name = val; }
-    const char* InputDescriptor_GetFile(InputDescriptor* input) { return input->file.c_str(); }
-    void InputDescriptor_SetFile(InputDescriptor* input, const char* val) { input->file = val; }
-    char* InputDescriptor_GetBuffer(InputDescriptor* input) { return input->buffer; }
-    void InputDescriptor_SetBuffer(InputDescriptor* input, char* val) { input->buffer = val; }
-    bool InputDescriptor_GetFailOnError(InputDescriptor* input) { return input->failOnError; }
-    void InputDescriptor_SetFailOnError(InputDescriptor* input, bool val) { input->failOnError = val; }
-    int InputDescriptor_GetLimitInputPixels(InputDescriptor* input) { return input->limitInputPixels; }
-    void InputDescriptor_SetLimitInputPixels(InputDescriptor* input, int val) { input->limitInputPixels = val; }
-    bool InputDescriptor_GetUnlimited(InputDescriptor* input) { return input->unlimited; }
-    void InputDescriptor_SetUnlimited(InputDescriptor* input, bool val) { input->unlimited = val; }
-    int InputDescriptor_GetAccess(InputDescriptor* input) { return (int) input->access; }
-    void InputDescriptor_SetAccess(InputDescriptor* input, int val) { input->access = (VipsAccess) val; }
-    size_t InputDescriptor_GetBufferLength(InputDescriptor* input) { return input->bufferLength; }
-    void InputDescriptor_SetBufferLength(InputDescriptor* input, size_t val) { input->bufferLength = val; }
-    bool InputDescriptor_GetIsBuffer(InputDescriptor* input) { return input->isBuffer; }
-    void InputDescriptor_SetIsBuffer(InputDescriptor* input, bool val) { input->isBuffer = val; }
-    double InputDescriptor_GetDensity(InputDescriptor* input) { return input->density; }
-    void InputDescriptor_SetDensity(InputDescriptor* input, double val) { input->density = val; }
-    int InputDescriptor_GetRawDepth(InputDescriptor* input) { return (int) input->rawDepth; }
-    void InputDescriptor_SetRawDepth(InputDescriptor* input, int val) { input->rawDepth = (VipsBandFormat) val; }
-    int InputDescriptor_GetRawChannels(InputDescriptor* input) { return input->rawChannels; }
-    void InputDescriptor_SetRawChannels(InputDescriptor* input, int val) { input->rawChannels = val; }
-    int InputDescriptor_GetRawWidth(InputDescriptor* input) { return input->rawWidth; }
-    void InputDescriptor_SetRawWidth(InputDescriptor* input, int val) { input->rawWidth = val; }
-    int InputDescriptor_GetRawHeight(InputDescriptor* input) { return input->rawHeight; }
-    void InputDescriptor_SetRawHeight(InputDescriptor* input, int val) { input->rawHeight = val; }
-    bool InputDescriptor_GetRawPremultiplied(InputDescriptor* input) { return input->rawPremultiplied; }
-    void InputDescriptor_SetRawPremultiplied(InputDescriptor* input, bool val) { input->rawPremultiplied = val; }
-    int InputDescriptor_GetPages(InputDescriptor* input) { return input->pages; }
-    void InputDescriptor_SetPages(InputDescriptor* input, int val) { input->pages = val; }
-    int InputDescriptor_GetPage(InputDescriptor* input) { return input->page; }
-    void InputDescriptor_SetPage(InputDescriptor* input, int val) { input->page = val; }
-    int InputDescriptor_GetLevel(InputDescriptor* input) { return input->level; }
-    void InputDescriptor_SetLevel(InputDescriptor* input, int val) { input->level = val; }
-    int InputDescriptor_GetSubifd(InputDescriptor* input) { return input->subifd; }
-    void InputDescriptor_SetSubifd(InputDescriptor* input, int val) { input->subifd = val; }
-    int InputDescriptor_GetCreateChannels(InputDescriptor* input) { return input->createChannels; }
-    void InputDescriptor_SetCreateChannels(InputDescriptor* input, int val) { input->createChannels = val; }
-    int InputDescriptor_GetCreateWidth(InputDescriptor* input) { return input->createWidth; }
-    void InputDescriptor_SetCreateWidth(InputDescriptor* input, int val) { input->createWidth = val; }
-    int InputDescriptor_GetCreateHeight(InputDescriptor* input) { return input->createHeight; }
-    void InputDescriptor_SetCreateHeight(InputDescriptor* input, int val) { input->createHeight = val; }
-    double* InputDescriptor_GetCreateBackground(InputDescriptor* input) { return input->createBackground.data(); }
-    void InputDescriptor_SetCreateBackground(InputDescriptor* input, double* val, size_t count) { input->createBackground = std::vector<double>(val, val + count); }
-    const char* InputDescriptor_GetCreateNoiseType(InputDescriptor* input) { return input->createNoiseType.c_str(); }
-    void InputDescriptor_SetCreateNoiseType(InputDescriptor* input, const char* val) { input->createNoiseType = val; }
-    double InputDescriptor_GetCreateNoiseMean(InputDescriptor* input) { return input->createNoiseMean; }
-    void InputDescriptor_SetCreateNoiseMean(InputDescriptor* input, double val) { input->createNoiseMean = val; }
-    double InputDescriptor_GetCreateNoiseSigma(InputDescriptor* input) { return input->createNoiseSigma; }
-    void InputDescriptor_SetCreateNoiseSigma(InputDescriptor* input, double val) { input->createNoiseSigma = val; }
-  }
-
   // Filename extension checkers
   static bool EndsWith(std::string const &str, std::string const &end) {
     return str.length() >= end.length() && 0 == str.compare(str.length() - end.length(), end.length(), end);

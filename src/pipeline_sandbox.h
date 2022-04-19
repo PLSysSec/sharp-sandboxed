@@ -28,7 +28,7 @@ namespace sharp {
   struct InputDescriptor;
 }
 struct Composite {
-  sharp::InputDescriptor *input;
+  InputDescriptor *input;
   VipsBlendMode mode;
   int gravity;
   int left;
@@ -49,13 +49,13 @@ struct Composite {
 };
 
 struct PipelineBaton {
-  sharp::InputDescriptor *input;
+  InputDescriptor *input;
   std::string formatOut;
   std::string fileOut;
   void *bufferOut;
   size_t bufferOutLength;
   std::vector<Composite *> composite;
-  std::vector<sharp::InputDescriptor *> joinChannelIn;
+  std::vector<InputDescriptor *> joinChannelIn;
   int topOffsetPre;
   int leftOffsetPre;
   int widthPre;
@@ -189,7 +189,7 @@ struct PipelineBaton {
   int convKernelHeight;
   double convKernelScale;
   double convKernelOffset;
-  sharp::InputDescriptor *boolean;
+  InputDescriptor *boolean;
   VipsOperationBoolean booleanOp;
   VipsOperationBoolean bandBoolOp;
   int extractChannel;
@@ -352,8 +352,8 @@ extern "C" {
   PipelineBaton* CreatePipelineBaton();
   void DestroyPipelineBaton(PipelineBaton* baton);
 
-  sharp::InputDescriptor* PipelineBaton_GetInput(PipelineBaton* baton);
-  void PipelineBaton_SetInput(PipelineBaton* baton, sharp::InputDescriptor* val);
+  InputDescriptor* PipelineBaton_GetInput(PipelineBaton* baton);
+  void PipelineBaton_SetInput(PipelineBaton* baton, InputDescriptor* val);
   const char* PipelineBaton_GetFormatOut(PipelineBaton* baton);
   void PipelineBaton_SetFormatOut(PipelineBaton* baton, const char* val);
   const char* PipelineBaton_GetFileOut(PipelineBaton* baton);
@@ -364,8 +364,8 @@ extern "C" {
   void PipelineBaton_SetBufferOutLength(PipelineBaton* baton, size_t val);
   Composite ** PipelineBaton_GetComposite(PipelineBaton* baton);
   void PipelineBaton_SetComposite(PipelineBaton* baton, std::vector<Composite *> val);
-  sharp::InputDescriptor ** PipelineBaton_GetJoinChannelIn(PipelineBaton* baton);
-  void PipelineBaton_SetJoinChannelIn(PipelineBaton* baton, std::vector<sharp::InputDescriptor *> val);
+  InputDescriptor ** PipelineBaton_GetJoinChannelIn(PipelineBaton* baton);
+  void PipelineBaton_SetJoinChannelIn(PipelineBaton* baton, std::vector<InputDescriptor *> val);
   int PipelineBaton_GetTopOffsetPre(PipelineBaton* baton);
   void PipelineBaton_SetTopOffsetPre(PipelineBaton* baton, int val);
   int PipelineBaton_GetLeftOffsetPre(PipelineBaton* baton);
@@ -632,8 +632,8 @@ extern "C" {
   void PipelineBaton_SetConvKernelScale(PipelineBaton* baton, double val);
   double PipelineBaton_GetConvKernelOffset(PipelineBaton* baton);
   void PipelineBaton_SetConvKernelOffset(PipelineBaton* baton, double val);
-  sharp::InputDescriptor* PipelineBaton_GetBoolean(PipelineBaton* baton);
-  void PipelineBaton_SetBoolean(PipelineBaton* baton, sharp::InputDescriptor* val);
+  InputDescriptor* PipelineBaton_GetBoolean(PipelineBaton* baton);
+  void PipelineBaton_SetBoolean(PipelineBaton* baton, InputDescriptor* val);
   VipsOperationBoolean PipelineBaton_GetBooleanOp(PipelineBaton* baton);
   void PipelineBaton_SetBooleanOp(PipelineBaton* baton, VipsOperationBoolean val);
   VipsOperationBoolean PipelineBaton_GetBandBoolOp(PipelineBaton* baton);
@@ -676,7 +676,7 @@ extern "C" {
   void PipelineBaton_SetRecombMatrix(PipelineBaton* baton, std::unique_ptr<double[]> val);
 
   void PipelineBaton_Composite_PushBack(PipelineBaton* baton, Composite * value);
-  void PipelineBaton_JoinChannelIn_PushBack(PipelineBaton* baton, sharp::InputDescriptor * value);
+  void PipelineBaton_JoinChannelIn_PushBack(PipelineBaton* baton, InputDescriptor * value);
   void PipelineBaton_ResizeBackground_PushBack(PipelineBaton* baton, double value);
   void PipelineBaton_FlattenBackground_PushBack(PipelineBaton* baton, double value);
   void PipelineBaton_RotationBackground_PushBack(PipelineBaton* baton, double value);

@@ -404,7 +404,7 @@ Napi::Value pipeline(const Napi::CallbackInfo& info) {
   PipelineBaton_SetTileId(baton, sharp::AttrAsStr(options, "tileId").c_str());
 
   // Force random access for certain operations
-  sharp::InputDescriptor* input = PipelineBaton_GetInput(baton);
+  InputDescriptor* input = PipelineBaton_GetInput(baton);
   if (InputDescriptor_GetAccess(input) == VIPS_ACCESS_SEQUENTIAL) {
     if (
       PipelineBaton_GetTrimThreshold(baton) > 0.0 ||

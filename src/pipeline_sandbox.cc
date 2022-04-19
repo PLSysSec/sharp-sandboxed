@@ -1195,14 +1195,14 @@ void DestroyPipelineBaton(PipelineBaton* baton) {
     delete composite->input;
     delete composite;
   }
-  for (sharp::InputDescriptor *input : baton->joinChannelIn) {
+  for (InputDescriptor *input : baton->joinChannelIn) {
     delete input;
   }
   delete baton;
 }
 
-sharp::InputDescriptor* PipelineBaton_GetInput(PipelineBaton* baton) { return baton->input; }
-void PipelineBaton_SetInput(PipelineBaton* baton, sharp::InputDescriptor* val) { baton->input = val; }
+InputDescriptor* PipelineBaton_GetInput(PipelineBaton* baton) { return baton->input; }
+void PipelineBaton_SetInput(PipelineBaton* baton, InputDescriptor* val) { baton->input = val; }
 const char* PipelineBaton_GetFormatOut(PipelineBaton* baton) { return baton->formatOut.c_str(); }
 void PipelineBaton_SetFormatOut(PipelineBaton* baton, const char* val) { baton->formatOut = val; }
 const char* PipelineBaton_GetFileOut(PipelineBaton* baton) { return baton->fileOut.c_str(); }
@@ -1213,8 +1213,8 @@ size_t PipelineBaton_GetBufferOutLength(PipelineBaton* baton) { return baton->bu
 void PipelineBaton_SetBufferOutLength(PipelineBaton* baton, size_t val) { baton->bufferOutLength = val; }
 Composite ** PipelineBaton_GetComposite(PipelineBaton* baton) { return baton->composite.data(); }
 void PipelineBaton_SetComposite(PipelineBaton* baton, std::vector<Composite *> val) { baton->composite = val; }
-sharp::InputDescriptor ** PipelineBaton_GetJoinChannelIn(PipelineBaton* baton) { return baton->joinChannelIn.data(); }
-void PipelineBaton_SetJoinChannelIn(PipelineBaton* baton, std::vector<sharp::InputDescriptor *> val) { baton->joinChannelIn = val; }
+InputDescriptor ** PipelineBaton_GetJoinChannelIn(PipelineBaton* baton) { return baton->joinChannelIn.data(); }
+void PipelineBaton_SetJoinChannelIn(PipelineBaton* baton, std::vector<InputDescriptor *> val) { baton->joinChannelIn = val; }
 int PipelineBaton_GetTopOffsetPre(PipelineBaton* baton) { return baton->topOffsetPre; }
 void PipelineBaton_SetTopOffsetPre(PipelineBaton* baton, int val) { baton->topOffsetPre = val; }
 int PipelineBaton_GetLeftOffsetPre(PipelineBaton* baton) { return baton->leftOffsetPre; }
@@ -1481,8 +1481,8 @@ double PipelineBaton_GetConvKernelScale(PipelineBaton* baton) { return baton->co
 void PipelineBaton_SetConvKernelScale(PipelineBaton* baton, double val) { baton->convKernelScale = val; }
 double PipelineBaton_GetConvKernelOffset(PipelineBaton* baton) { return baton->convKernelOffset; }
 void PipelineBaton_SetConvKernelOffset(PipelineBaton* baton, double val) { baton->convKernelOffset = val; }
-sharp::InputDescriptor* PipelineBaton_GetBoolean(PipelineBaton* baton) { return baton->boolean; }
-void PipelineBaton_SetBoolean(PipelineBaton* baton, sharp::InputDescriptor* val) { baton->boolean = val; }
+InputDescriptor* PipelineBaton_GetBoolean(PipelineBaton* baton) { return baton->boolean; }
+void PipelineBaton_SetBoolean(PipelineBaton* baton, InputDescriptor* val) { baton->boolean = val; }
 VipsOperationBoolean PipelineBaton_GetBooleanOp(PipelineBaton* baton) { return baton->booleanOp; }
 void PipelineBaton_SetBooleanOp(PipelineBaton* baton, VipsOperationBoolean val) { baton->booleanOp = val; }
 VipsOperationBoolean PipelineBaton_GetBandBoolOp(PipelineBaton* baton) { return baton->bandBoolOp; }
@@ -1525,7 +1525,7 @@ double* PipelineBaton_GetRecombMatrix(PipelineBaton* baton) { return baton->reco
 void PipelineBaton_SetRecombMatrix(PipelineBaton* baton, std::unique_ptr<double[]> val) { baton->recombMatrix = std::move(val); }
 
 void PipelineBaton_Composite_PushBack(PipelineBaton* baton, Composite * value) { baton->composite.push_back(value); }
-void PipelineBaton_JoinChannelIn_PushBack(PipelineBaton* baton, sharp::InputDescriptor * value) { baton->joinChannelIn.push_back(value); }
+void PipelineBaton_JoinChannelIn_PushBack(PipelineBaton* baton, InputDescriptor * value) { baton->joinChannelIn.push_back(value); }
 void PipelineBaton_ResizeBackground_PushBack(PipelineBaton* baton, double value) { baton->resizeBackground.push_back(value); }
 void PipelineBaton_FlattenBackground_PushBack(PipelineBaton* baton, double value) { baton->flattenBackground.push_back(value); }
 void PipelineBaton_RotationBackground_PushBack(PipelineBaton* baton, double value) { baton->rotationBackground.push_back(value); }
