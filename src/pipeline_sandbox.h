@@ -24,9 +24,8 @@
 
 #include "canvas.h"
 
-namespace sharp {
-  struct InputDescriptor;
-}
+struct InputDescriptor;
+
 struct Composite {
   InputDescriptor *input;
   VipsBlendMode mode;
