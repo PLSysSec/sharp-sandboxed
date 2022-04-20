@@ -1184,6 +1184,30 @@ void PipelineWorkerExecute(PipelineBaton *baton) {
   vips_thread_shutdown();
 }
 
+Composite* CreateComposite() {
+  return new Composite;
+}
+void DestroyComposite(Composite* composite) {
+  delete composite;
+}
+
+InputDescriptor* Composite_GetInput(Composite* composite) { return composite->input; }
+void Composite_SetInput(Composite* composite, InputDescriptor* input) { composite->input = input; }
+VipsBlendMode Composite_GetMode(Composite* composite) { return composite->mode; }
+void Composite_SetMode(Composite* composite, VipsBlendMode mode) { composite->mode = mode; }
+int Composite_GetGravity(Composite* composite) { return composite->gravity; }
+void Composite_SetGravity(Composite* composite, int gravity) { composite->gravity = gravity; }
+int Composite_GetLeft(Composite* composite) { return composite->left; }
+void Composite_SetLeft(Composite* composite, int left) { composite->left = left; }
+int Composite_GetTop(Composite* composite) { return composite->top; }
+void Composite_SetTop(Composite* composite, int top) { composite->top = top; }
+bool Composite_GetHasOffset(Composite* composite) { return composite->hasOffset; }
+void Composite_SetHasOffset(Composite* composite, bool hasOffset) { composite->hasOffset = hasOffset; }
+bool Composite_GetTile(Composite* composite) { return composite->tile; }
+void Composite_SetTile(Composite* composite, bool tile) { composite->tile = tile; }
+bool Composite_GetPremultiplied(Composite* composite) { return composite->premultiplied; }
+void Composite_SetPremultiplied(Composite* composite, bool premultiplied) { composite->premultiplied = premultiplied; }
+
 PipelineBaton* CreatePipelineBaton() {
   return new PipelineBaton;
 }

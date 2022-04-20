@@ -184,16 +184,16 @@ Napi::Value pipeline(const Napi::CallbackInfo& info) {
   Napi::Array compositeArray = options.Get("composite").As<Napi::Array>();
   for (unsigned int i = 0; i < compositeArray.Length(); i++) {
     Napi::Object compositeObject = compositeArray.Get(i).As<Napi::Object>();
-    Composite *composite = new Composite;
-    composite->input = sharp::CreateInputDescriptor(compositeObject.Get("input").As<Napi::Object>());
-    composite->mode = static_cast<VipsBlendMode>(
-      vips_enum_from_nick(nullptr, VIPS_TYPE_BLEND_MODE, sharp::AttrAsStr(compositeObject, "blend").data()));
-    composite->gravity = sharp::AttrAsUint32(compositeObject, "gravity");
-    composite->left = sharp::AttrAsInt32(compositeObject, "left");
-    composite->top = sharp::AttrAsInt32(compositeObject, "top");
-    composite->hasOffset = sharp::AttrAsBool(compositeObject, "hasOffset");
-    composite->tile = sharp::AttrAsBool(compositeObject, "tile");
-    composite->premultiplied = sharp::AttrAsBool(compositeObject, "premultiplied");
+    Composite *composite = CreateComposite();
+    Composite_SetInput(composite, sharp::CreateInputDescriptor(sandbox, compositeObject.Get("input").As<Napi::Object>()).UNSAFE_unverified());
+    Composite_SetMode(composite, static_cast<VipsBlendMode>(
+      vips_enum_from_nick(nullptr, VIPS_TYPE_BLEND_MODE, sharp::AttrAsStr(compositeObject, "blend").data())));
+    Composite_SetGravity(composite, sharp::AttrAsUint32(compositeObject, "gravity"));
+    Composite_SetLeft(composite, sharp::AttrAsInt32(compositeObject, "left"));
+    Composite_SetTop(composite, sharp::AttrAsInt32(compositeObject, "top"));
+    Composite_SetHasOffset(composite, sharp::AttrAsBool(compositeObject, "hasOffset"));
+    Composite_SetTile(composite, sharp::AttrAsBool(compositeObject, "tile"));
+    Composite_SetPremultiplied(composite, sharp::AttrAsBool(compositeObject, "premultiplied"));
     PipelineBaton_Composite_PushBack(baton, composite);
   }
   // Resize options

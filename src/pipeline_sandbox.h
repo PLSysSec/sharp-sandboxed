@@ -47,6 +47,29 @@ struct Composite {
     premultiplied(false) {}
 };
 
+extern "C" {
+  Composite* CreateComposite();
+  void DestroyComposite(Composite* composite);
+
+  InputDescriptor* Composite_GetInput(Composite* composite);
+  void Composite_SetInput(Composite* composite, InputDescriptor* input);
+  VipsBlendMode Composite_GetMode(Composite* composite);
+  void Composite_SetMode(Composite* composite, VipsBlendMode mode);
+  int Composite_GetGravity(Composite* composite);
+  void Composite_SetGravity(Composite* composite, int gravity);
+  int Composite_GetLeft(Composite* composite);
+  void Composite_SetLeft(Composite* composite, int left);
+  int Composite_GetTop(Composite* composite);
+  void Composite_SetTop(Composite* composite, int top);
+  bool Composite_GetHasOffset(Composite* composite);
+  void Composite_SetHasOffset(Composite* composite, bool hasOffset);
+  bool Composite_GetTile(Composite* composite);
+  void Composite_SetTile(Composite* composite, bool tile);
+  bool Composite_GetPremultiplied(Composite* composite);
+  void Composite_SetPremultiplied(Composite* composite, bool premultiplied);
+
+}
+
 struct PipelineBaton {
   InputDescriptor *input;
   std::string formatOut;
