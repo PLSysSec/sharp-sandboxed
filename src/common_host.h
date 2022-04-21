@@ -65,6 +65,25 @@ namespace sharp {
   std::string VipsWarningPop();
 
   /*
+    Copy string to the given sandbox
+  */
+  tainted_vips<const char*> CopyStringToSandbox(rlbox_sandbox_vips* sandbox, const char* str);
+
+  /*
+    Copy vector to the given sandbox
+  */
+  template<typename T>
+  tainted_vips<T*> CopyVectorToSandbox(rlbox_sandbox_vips* sandbox, std::vector<T> vec) {
+    size_t size = vec.size();
+    size_t non_zero_size = size == 0? 1 : size;
+    tainted_vips<T*> t_buffer = sandbox->malloc_in_sandbox<T>(non_zero_size);
+    for(size_t i = 0; i < size; i++) {
+      t_buffer[i] = vec[i];
+    }
+    return t_buffer;
+  }
+
+  /*
     Call vips_enum_from_nick in the given sandbox
   */
   tainted_vips<int> SandboxVipsEnumFromNick(rlbox_sandbox_vips* sandbox, const char *domain, GType type, const char *str);

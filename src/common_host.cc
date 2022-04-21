@@ -184,14 +184,15 @@ namespace sharp {
     return warning;
   }
 
-  static tainted_vips<const char*> CopyStringToSandbox(rlbox_sandbox_vips* sandbox, const char* str) {
+  tainted_vips<const char*> CopyStringToSandbox(rlbox_sandbox_vips* sandbox, const char* str) {
     if (!str) {
       return nullptr;
     }
 
-    size_t len = strnlen(str, std::numeric_limits<size_t>::max() - 1);
-    tainted_vips<char*> t_str = sandbox->malloc_in_sandbox<char>(len + 1);
-    strncpy(t_str.unverified_safe_pointer_because(len + 1, "String copy"), str, len);
+    const uint32_t lenString = strnlen(str, std::numeric_limits<uint32_t>::max() - 1);
+    const uint32_t len = lenString + 1;
+    tainted_vips<char*> t_str = sandbox->malloc_in_sandbox<char>(len);
+    strncpy(t_str.unverified_safe_pointer_because(len, "String copy"), str, len);
     return rlbox::sandbox_const_cast<const char*>(t_str);
   }
 

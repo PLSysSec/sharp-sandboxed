@@ -187,7 +187,6 @@ Napi::Value pipeline(const Napi::CallbackInfo& info) {
 
   // V8 objects are converted to non-V8 types held in the baton struct
   tainted_vips<PipelineBaton*> t_baton = sandbox->invoke_sandbox_function(CreatePipelineBaton);
-  PipelineBaton* baton = t_baton.UNSAFE_unverified();
   Napi::Object options = info[0].As<Napi::Object>();
 
   // Input
@@ -241,8 +240,17 @@ Napi::Value pipeline(const Napi::CallbackInfo& info) {
   sandbox->invoke_sandbox_function(PipelineBaton_SetWithoutEnlargement, t_baton, sharp::AttrAsBool(options, "withoutEnlargement"));
   sandbox->invoke_sandbox_function(PipelineBaton_SetWithoutReduction, t_baton, sharp::AttrAsBool(options, "withoutReduction"));
   sandbox->invoke_sandbox_function(PipelineBaton_SetPosition, t_baton, sharp::AttrAsInt32(options, "position"));
-  PipelineBaton_SetResizeBackground(baton, sharp::AttrAsVectorOfDouble(options, "resizeBackground"));
-  PipelineBaton_SetKernel(baton, sharp::AttrAsStr(options, "kernel").c_str());
+  {
+    auto vec = sharp::AttrAsVectorOfDouble(options, "resizeBackground");
+    auto t_vec = sharp::CopyVectorToSandbox(sandbox, vec);
+    sandbox->invoke_sandbox_function(PipelineBaton_SetResizeBackground, t_baton, t_vec, vec.size());
+    sandbox->free_in_sandbox(t_vec);
+  }
+  {
+    auto sbxString = sharp::CopyStringToSandbox(sandbox, sharp::AttrAsStr(options, "kernel").c_str());
+    sandbox->invoke_sandbox_function(PipelineBaton_SetKernel, t_baton, sbxString);
+    sandbox->free_in_sandbox(sbxString);
+  }
   sandbox->invoke_sandbox_function(PipelineBaton_SetFastShrinkOnLoad, t_baton, sharp::AttrAsBool(options, "fastShrinkOnLoad"));
   // Join Channel Options
   if (options.Has("joinChannelIn")) {
@@ -254,7 +262,12 @@ Napi::Value pipeline(const Napi::CallbackInfo& info) {
   }
   // Operators
   sandbox->invoke_sandbox_function(PipelineBaton_SetFlatten, t_baton, sharp::AttrAsBool(options, "flatten"));
-  PipelineBaton_SetFlattenBackground(baton, sharp::AttrAsVectorOfDouble(options, "flattenBackground"));
+  {
+    auto vec = sharp::AttrAsVectorOfDouble(options, "flattenBackground");
+    auto t_vec = sharp::CopyVectorToSandbox(sandbox, vec);
+    sandbox->invoke_sandbox_function(PipelineBaton_SetFlattenBackground, t_baton, t_vec, vec.size());
+    sandbox->free_in_sandbox(t_vec);
+  }
   sandbox->invoke_sandbox_function(PipelineBaton_SetNegate, t_baton, sharp::AttrAsBool(options, "negate"));
   sandbox->invoke_sandbox_function(PipelineBaton_SetNegateAlpha, t_baton, sharp::AttrAsBool(options, "negateAlpha"));
   sandbox->invoke_sandbox_function(PipelineBaton_SetBlurSigma, t_baton, sharp::AttrAsDouble(options, "blurSigma"));
@@ -284,7 +297,12 @@ Napi::Value pipeline(const Napi::CallbackInfo& info) {
   sandbox->invoke_sandbox_function(PipelineBaton_SetUseExifOrientation, t_baton, sharp::AttrAsBool(options, "useExifOrientation"));
   sandbox->invoke_sandbox_function(PipelineBaton_SetAngle, t_baton, sharp::AttrAsInt32(options, "angle"));
   sandbox->invoke_sandbox_function(PipelineBaton_SetRotationAngle, t_baton, sharp::AttrAsDouble(options, "rotationAngle"));
-  PipelineBaton_SetRotationBackground(baton, sharp::AttrAsVectorOfDouble(options, "rotationBackground"));
+  {
+    auto vec = sharp::AttrAsVectorOfDouble(options, "rotationBackground");
+    auto t_vec = sharp::CopyVectorToSandbox(sandbox, vec);
+    sandbox->invoke_sandbox_function(PipelineBaton_SetRotationBackground, t_baton, t_vec, vec.size());
+    sandbox->free_in_sandbox(t_vec);
+  }
   sandbox->invoke_sandbox_function(PipelineBaton_SetRotateBeforePreExtract, t_baton, sharp::AttrAsBool(options, "rotateBeforePreExtract"));
   sandbox->invoke_sandbox_function(PipelineBaton_SetFlip, t_baton, sharp::AttrAsBool(options, "flip"));
   sandbox->invoke_sandbox_function(PipelineBaton_SetFlop, t_baton, sharp::AttrAsBool(options, "flop"));
@@ -292,15 +310,34 @@ Napi::Value pipeline(const Napi::CallbackInfo& info) {
   sandbox->invoke_sandbox_function(PipelineBaton_SetExtendBottom, t_baton, sharp::AttrAsInt32(options, "extendBottom"));
   sandbox->invoke_sandbox_function(PipelineBaton_SetExtendLeft, t_baton, sharp::AttrAsInt32(options, "extendLeft"));
   sandbox->invoke_sandbox_function(PipelineBaton_SetExtendRight, t_baton, sharp::AttrAsInt32(options, "extendRight"));
-  PipelineBaton_SetExtendBackground(baton, sharp::AttrAsVectorOfDouble(options, "extendBackground"));
+  {
+    auto vec = sharp::AttrAsVectorOfDouble(options, "extendBackground");
+    auto t_vec = sharp::CopyVectorToSandbox(sandbox, vec);
+    sandbox->invoke_sandbox_function(PipelineBaton_SetExtendBackground, t_baton, t_vec, vec.size());
+    sandbox->free_in_sandbox(t_vec);
+  }
   sandbox->invoke_sandbox_function(PipelineBaton_SetExtractChannel, t_baton, sharp::AttrAsInt32(options, "extractChannel"));
-  PipelineBaton_SetAffineMatrix(baton, sharp::AttrAsVectorOfDouble(options, "affineMatrix"));
-  PipelineBaton_SetAffineBackground(baton, sharp::AttrAsVectorOfDouble(options, "affineBackground"));
+  {
+    auto vec = sharp::AttrAsVectorOfDouble(options, "affineMatrix");
+    auto t_vec = sharp::CopyVectorToSandbox(sandbox, vec);
+    sandbox->invoke_sandbox_function(PipelineBaton_SetAffineMatrix, t_baton, t_vec, vec.size());
+    sandbox->free_in_sandbox(t_vec);
+  }
+  {
+    auto vec = sharp::AttrAsVectorOfDouble(options, "affineBackground");
+    auto t_vec = sharp::CopyVectorToSandbox(sandbox, vec);
+    sandbox->invoke_sandbox_function(PipelineBaton_SetAffineBackground, t_baton, t_vec, vec.size());
+    sandbox->free_in_sandbox(t_vec);
+  }
   sandbox->invoke_sandbox_function(PipelineBaton_SetAffineIdx, t_baton, sharp::AttrAsDouble(options, "affineIdx"));
   sandbox->invoke_sandbox_function(PipelineBaton_SetAffineIdy, t_baton, sharp::AttrAsDouble(options, "affineIdy"));
   sandbox->invoke_sandbox_function(PipelineBaton_SetAffineOdx, t_baton, sharp::AttrAsDouble(options, "affineOdx"));
   sandbox->invoke_sandbox_function(PipelineBaton_SetAffineOdy, t_baton, sharp::AttrAsDouble(options, "affineOdy"));
-  PipelineBaton_SetAffineInterpolator(baton, sharp::AttrAsStr(options, "affineInterpolator").c_str());
+  {
+    auto sbxString = sharp::CopyStringToSandbox(sandbox, sharp::AttrAsStr(options, "affineInterpolator").c_str());
+    sandbox->invoke_sandbox_function(PipelineBaton_SetAffineInterpolator, t_baton, sbxString);
+    sandbox->free_in_sandbox(sbxString);
+  }
   sandbox->invoke_sandbox_function(PipelineBaton_SetRemoveAlpha, t_baton, sharp::AttrAsBool(options, "removeAlpha"));
   sandbox->invoke_sandbox_function(PipelineBaton_SetEnsureAlpha, t_baton, sharp::AttrAsDouble(options, "ensureAlpha"));
   if (options.Has("boolean")) {
@@ -316,15 +353,15 @@ Napi::Value pipeline(const Napi::CallbackInfo& info) {
     sandbox->invoke_sandbox_function(PipelineBaton_SetConvKernelHeight, t_baton, sharp::AttrAsUint32(kernel, "height"));
     sandbox->invoke_sandbox_function(PipelineBaton_SetConvKernelScale, t_baton, sharp::AttrAsDouble(kernel, "scale"));
     sandbox->invoke_sandbox_function(PipelineBaton_SetConvKernelOffset, t_baton, sharp::AttrAsDouble(kernel, "offset"));
-    size_t const kernelSize = static_cast<size_t>(PipelineBaton_GetConvKernelWidth(baton) * PipelineBaton_GetConvKernelHeight(baton));
-    PipelineBaton_SetConvKernel(baton, std::unique_ptr<double[]>(new double[kernelSize]));
+    tainted_vips<size_t> kernelSize = rlbox::sandbox_static_cast<size_t>(sandbox->invoke_sandbox_function(PipelineBaton_GetConvKernelWidth, t_baton) * sandbox->invoke_sandbox_function(PipelineBaton_GetConvKernelHeight, t_baton));
+    sandbox->invoke_sandbox_function(PipelineBaton_SetConvKernelSize, t_baton, kernelSize);
     Napi::Array kdata = kernel.Get("kernel").As<Napi::Array>();
-    for (unsigned int i = 0; i < kernelSize; i++) {
+    for (unsigned int i = 0; i < kernelSize.unverified_safe_because("worst case infinite loop"); i++) {
       sandbox->invoke_sandbox_function(PipelineBaton_GetConvKernel, t_baton)[i] = sharp::AttrAsDouble(kdata, i);
     }
   }
   if (options.Has("recombMatrix")) {
-    PipelineBaton_SetRecombMatrix(baton, std::unique_ptr<double[]>(new double[9]));
+    sandbox->invoke_sandbox_function(PipelineBaton_SetRecombMatrixSize, t_baton, 9);
     Napi::Array recombMatrix = options.Get("recombMatrix").As<Napi::Array>();
     for (unsigned int i = 0; i < 9; i++) {
       sandbox->invoke_sandbox_function(PipelineBaton_GetRecombMatrix, t_baton)[i] = sharp::AttrAsDouble(recombMatrix, i);
@@ -339,23 +376,44 @@ Napi::Value pipeline(const Napi::CallbackInfo& info) {
     sandbox->invoke_sandbox_function(PipelineBaton_SetColourspace, t_baton, VIPS_INTERPRETATION_sRGB);
   }
   // Output
-  PipelineBaton_SetFormatOut(baton, sharp::AttrAsStr(options, "formatOut").c_str());
-  PipelineBaton_SetFileOut(baton, sharp::AttrAsStr(options, "fileOut").c_str());
+  {
+    auto sbxString = sharp::CopyStringToSandbox(sandbox, sharp::AttrAsStr(options, "formatOut").c_str());
+    sandbox->invoke_sandbox_function(PipelineBaton_SetFormatOut, t_baton, sbxString);
+    sandbox->free_in_sandbox(sbxString);
+  }
+  {
+    auto sbxString = sharp::CopyStringToSandbox(sandbox, sharp::AttrAsStr(options, "fileOut").c_str());
+    sandbox->invoke_sandbox_function(PipelineBaton_SetFileOut, t_baton, sbxString);
+    sandbox->free_in_sandbox(sbxString);
+  }
   sandbox->invoke_sandbox_function(PipelineBaton_SetWithMetadata, t_baton, sharp::AttrAsBool(options, "withMetadata"));
   sandbox->invoke_sandbox_function(PipelineBaton_SetWithMetadataOrientation, t_baton, sharp::AttrAsUint32(options, "withMetadataOrientation"));
   sandbox->invoke_sandbox_function(PipelineBaton_SetWithMetadataDensity, t_baton, sharp::AttrAsDouble(options, "withMetadataDensity"));
-  PipelineBaton_SetWithMetadataIcc(baton, sharp::AttrAsStr(options, "withMetadataIcc").c_str());
+  {
+    auto sbxString = sharp::CopyStringToSandbox(sandbox, sharp::AttrAsStr(options, "withMetadataIcc").c_str());
+    sandbox->invoke_sandbox_function(PipelineBaton_SetWithMetadataIcc, t_baton, sbxString);
+    sandbox->free_in_sandbox(sbxString);
+  }
   Napi::Object mdStrs = options.Get("withMetadataStrs").As<Napi::Object>();
   Napi::Array mdStrKeys = mdStrs.GetPropertyNames();
   for (unsigned int i = 0; i < mdStrKeys.Length(); i++) {
     std::string k = sharp::AttrAsStr(mdStrKeys, i);
-    PipelineBaton_WithMetadataStrs_Insert(baton, std::make_pair(k, sharp::AttrAsStr(mdStrs, k)));
+    std::string v = sharp::AttrAsStr(mdStrs, k);
+    auto t_k = sharp::CopyStringToSandbox(sandbox, k.c_str());
+    auto t_v = sharp::CopyStringToSandbox(sandbox, v.c_str());
+    sandbox->invoke_sandbox_function(PipelineBaton_WithMetadataStrs_Insert, t_baton, t_k, t_v);
+    sandbox->free_in_sandbox(t_k);
+    sandbox->free_in_sandbox(t_v);
   }
   sandbox->invoke_sandbox_function(PipelineBaton_SetTimeoutSeconds, t_baton, sharp::AttrAsUint32(options, "timeoutSeconds"));
   // Format-specific
   sandbox->invoke_sandbox_function(PipelineBaton_SetJpegQuality, t_baton, sharp::AttrAsUint32(options, "jpegQuality"));
   sandbox->invoke_sandbox_function(PipelineBaton_SetJpegProgressive, t_baton, sharp::AttrAsBool(options, "jpegProgressive"));
-  PipelineBaton_SetJpegChromaSubsampling(baton, sharp::AttrAsStr(options, "jpegChromaSubsampling").c_str());
+  {
+    auto sbxString = sharp::CopyStringToSandbox(sandbox, sharp::AttrAsStr(options, "jpegChromaSubsampling").c_str());
+    sandbox->invoke_sandbox_function(PipelineBaton_SetJpegChromaSubsampling, t_baton, sbxString);
+    sandbox->free_in_sandbox(sbxString);
+  }
   sandbox->invoke_sandbox_function(PipelineBaton_SetJpegTrellisQuantisation, t_baton, sharp::AttrAsBool(options, "jpegTrellisQuantisation"));
   sandbox->invoke_sandbox_function(PipelineBaton_SetJpegQuantisationTable, t_baton, sharp::AttrAsUint32(options, "jpegQuantisationTable"));
   sandbox->invoke_sandbox_function(PipelineBaton_SetJpegOvershootDeringing, t_baton, sharp::AttrAsBool(options, "jpegOvershootDeringing"));
@@ -373,7 +431,11 @@ Napi::Value pipeline(const Napi::CallbackInfo& info) {
   sandbox->invoke_sandbox_function(PipelineBaton_SetJp2Lossless, t_baton, sharp::AttrAsBool(options, "jp2Lossless"));
   sandbox->invoke_sandbox_function(PipelineBaton_SetJp2TileHeight, t_baton, sharp::AttrAsUint32(options, "jp2TileHeight"));
   sandbox->invoke_sandbox_function(PipelineBaton_SetJp2TileWidth, t_baton, sharp::AttrAsUint32(options, "jp2TileWidth"));
-  PipelineBaton_SetJp2ChromaSubsampling(baton, sharp::AttrAsStr(options, "jp2ChromaSubsampling").c_str());
+  {
+    auto sbxString = sharp::CopyStringToSandbox(sandbox, sharp::AttrAsStr(options, "jp2ChromaSubsampling").c_str());
+    sandbox->invoke_sandbox_function(PipelineBaton_SetJp2ChromaSubsampling, t_baton, sbxString);
+    sandbox->free_in_sandbox(sbxString);
+  }
   sandbox->invoke_sandbox_function(PipelineBaton_SetWebpQuality, t_baton, sharp::AttrAsUint32(options, "webpQuality"));
   sandbox->invoke_sandbox_function(PipelineBaton_SetWebpAlphaQuality, t_baton, sharp::AttrAsUint32(options, "webpAlphaQuality"));
   sandbox->invoke_sandbox_function(PipelineBaton_SetWebpLossless, t_baton, sharp::AttrAsBool(options, "webpLossless"));
@@ -417,7 +479,11 @@ Napi::Value pipeline(const Napi::CallbackInfo& info) {
     sharp::SandboxVipsEnumFromNick(sandbox, nullptr, VIPS_TYPE_FOREIGN_HEIF_COMPRESSION,
     sharp::AttrAsStr(options, "heifCompression").data())));
   sandbox->invoke_sandbox_function(PipelineBaton_SetHeifEffort, t_baton, sharp::AttrAsUint32(options, "heifEffort"));
-  PipelineBaton_SetHeifChromaSubsampling(baton, sharp::AttrAsStr(options, "heifChromaSubsampling").c_str());
+  {
+    auto sbxString = sharp::CopyStringToSandbox(sandbox, sharp::AttrAsStr(options, "heifChromaSubsampling").c_str());
+    sandbox->invoke_sandbox_function(PipelineBaton_SetHeifChromaSubsampling, t_baton, sbxString);
+    sandbox->free_in_sandbox(sbxString);
+  }
   // Raw output
   sandbox->invoke_sandbox_function(PipelineBaton_SetRawDepth, t_baton, rlbox::sandbox_static_cast<VipsBandFormat>(
     sharp::SandboxVipsEnumFromNick(sandbox, nullptr, VIPS_TYPE_BAND_FORMAT,
@@ -427,13 +493,21 @@ Napi::Value pipeline(const Napi::CallbackInfo& info) {
     sandbox->invoke_sandbox_function(PipelineBaton_SetLoop, t_baton, sharp::AttrAsUint32(options, "loop"));
   }
   if (sharp::HasAttr(options, "delay")) {
-    PipelineBaton_SetDelay(baton, sharp::AttrAsInt32Vector(options, "delay"));
+    auto vec = sharp::AttrAsInt32Vector(options, "delay");
+    auto t_vec = sharp::CopyVectorToSandbox(sandbox, vec);
+    sandbox->invoke_sandbox_function(PipelineBaton_SetDelay, t_baton, t_vec, vec.size());
+    sandbox->free_in_sandbox(t_vec);
   }
   // Tile output
   sandbox->invoke_sandbox_function(PipelineBaton_SetTileSize, t_baton, sharp::AttrAsUint32(options, "tileSize"));
   sandbox->invoke_sandbox_function(PipelineBaton_SetTileOverlap, t_baton, sharp::AttrAsUint32(options, "tileOverlap"));
   sandbox->invoke_sandbox_function(PipelineBaton_SetTileAngle, t_baton, sharp::AttrAsInt32(options, "tileAngle"));
-  PipelineBaton_SetTileBackground(baton, sharp::AttrAsVectorOfDouble(options, "tileBackground"));
+  {
+    auto vec = sharp::AttrAsVectorOfDouble(options, "tileBackground");
+    auto t_vec = sharp::CopyVectorToSandbox(sandbox, vec);
+    sandbox->invoke_sandbox_function(PipelineBaton_SetTileBackground, t_baton, t_vec, vec.size());
+    sandbox->free_in_sandbox(t_vec);
+  }
   sandbox->invoke_sandbox_function(PipelineBaton_SetTileSkipBlanks, t_baton, sharp::AttrAsInt32(options, "tileSkipBlanks"));
   sandbox->invoke_sandbox_function(PipelineBaton_SetTileContainer, t_baton, rlbox::sandbox_static_cast<VipsForeignDzContainer>(
     sharp::SandboxVipsEnumFromNick(sandbox, nullptr, VIPS_TYPE_FOREIGN_DZ_CONTAINER,
@@ -441,12 +515,20 @@ Napi::Value pipeline(const Napi::CallbackInfo& info) {
   sandbox->invoke_sandbox_function(PipelineBaton_SetTileLayout, t_baton, rlbox::sandbox_static_cast<VipsForeignDzLayout>(
     sharp::SandboxVipsEnumFromNick(sandbox, nullptr, VIPS_TYPE_FOREIGN_DZ_LAYOUT,
     sharp::AttrAsStr(options, "tileLayout").data())));
-  PipelineBaton_SetTileFormat(baton, sharp::AttrAsStr(options, "tileFormat").c_str());
+  {
+    auto sbxString = sharp::CopyStringToSandbox(sandbox, sharp::AttrAsStr(options, "tileFormat").c_str());
+    sandbox->invoke_sandbox_function(PipelineBaton_SetTileFormat, t_baton, sbxString);
+    sandbox->free_in_sandbox(sbxString);
+  }
   sandbox->invoke_sandbox_function(PipelineBaton_SetTileDepth, t_baton, rlbox::sandbox_static_cast<VipsForeignDzDepth>(
     sharp::SandboxVipsEnumFromNick(sandbox, nullptr, VIPS_TYPE_FOREIGN_DZ_DEPTH,
     sharp::AttrAsStr(options, "tileDepth").data())));
   sandbox->invoke_sandbox_function(PipelineBaton_SetTileCentre, t_baton, sharp::AttrAsBool(options, "tileCentre"));
-  PipelineBaton_SetTileId(baton, sharp::AttrAsStr(options, "tileId").c_str());
+  {
+    auto sbxString = sharp::CopyStringToSandbox(sandbox, sharp::AttrAsStr(options, "tileId").c_str());
+    sandbox->invoke_sandbox_function(PipelineBaton_SetTileId, t_baton, sbxString);
+    sandbox->free_in_sandbox(sbxString);
+  }
 
   // Force random access for certain operations
   tainted_vips<InputDescriptor*> input = sandbox->invoke_sandbox_function(PipelineBaton_GetInput, t_baton);

@@ -1236,9 +1236,9 @@ void PipelineBaton_SetBufferOut(PipelineBaton* baton, void* val) { baton->buffer
 size_t PipelineBaton_GetBufferOutLength(PipelineBaton* baton) { return baton->bufferOutLength; }
 void PipelineBaton_SetBufferOutLength(PipelineBaton* baton, size_t val) { baton->bufferOutLength = val; }
 Composite ** PipelineBaton_GetComposite(PipelineBaton* baton) { return baton->composite.data(); }
-void PipelineBaton_SetComposite(PipelineBaton* baton, std::vector<Composite *> val) { baton->composite = val; }
+void PipelineBaton_SetComposite(PipelineBaton* baton, Composite ** val, size_t count) { baton->composite = std::vector<Composite*>(val, val + count); }
 InputDescriptor ** PipelineBaton_GetJoinChannelIn(PipelineBaton* baton) { return baton->joinChannelIn.data(); }
-void PipelineBaton_SetJoinChannelIn(PipelineBaton* baton, std::vector<InputDescriptor *> val) { baton->joinChannelIn = val; }
+void PipelineBaton_SetJoinChannelIn(PipelineBaton* baton, InputDescriptor ** val, size_t count) { baton->joinChannelIn = std::vector<InputDescriptor*>(val, val + count); }
 int PipelineBaton_GetTopOffsetPre(PipelineBaton* baton) { return baton->topOffsetPre; }
 void PipelineBaton_SetTopOffsetPre(PipelineBaton* baton, int val) { baton->topOffsetPre = val; }
 int PipelineBaton_GetLeftOffsetPre(PipelineBaton* baton) { return baton->leftOffsetPre; }
@@ -1266,7 +1266,7 @@ void PipelineBaton_SetCanvas(PipelineBaton* baton, sharp::Canvas val) { baton->c
 int PipelineBaton_GetPosition(PipelineBaton* baton) { return baton->position; }
 void PipelineBaton_SetPosition(PipelineBaton* baton, int val) { baton->position = val; }
 double* PipelineBaton_GetResizeBackground(PipelineBaton* baton) { return baton->resizeBackground.data(); }
-void PipelineBaton_SetResizeBackground(PipelineBaton* baton, std::vector<double> val) { baton->resizeBackground = val; }
+void PipelineBaton_SetResizeBackground(PipelineBaton* baton, double* val, size_t count) { baton->resizeBackground = std::vector<double>(val, val + count); }
 bool PipelineBaton_GetHasCropOffset(PipelineBaton* baton) { return baton->hasCropOffset; }
 void PipelineBaton_SetHasCropOffset(PipelineBaton* baton, bool val) { baton->hasCropOffset = val; }
 int PipelineBaton_GetCropOffsetLeft(PipelineBaton* baton) { return baton->cropOffsetLeft; }
@@ -1288,7 +1288,7 @@ void PipelineBaton_SetTintB(PipelineBaton* baton, double val) { baton->tintB = v
 bool PipelineBaton_GetFlatten(PipelineBaton* baton) { return baton->flatten; }
 void PipelineBaton_SetFlatten(PipelineBaton* baton, bool val) { baton->flatten = val; }
 double* PipelineBaton_GetFlattenBackground(PipelineBaton* baton) { return baton->flattenBackground.data(); }
-void PipelineBaton_SetFlattenBackground(PipelineBaton* baton, std::vector<double> val) { baton->flattenBackground = val; }
+void PipelineBaton_SetFlattenBackground(PipelineBaton* baton, double* val, size_t count) { baton->flattenBackground = std::vector<double>(val, val + count); }
 bool PipelineBaton_GetNegate(PipelineBaton* baton) { return baton->negate; }
 void PipelineBaton_SetNegate(PipelineBaton* baton, bool val) { baton->negate = val; }
 bool PipelineBaton_GetNegateAlpha(PipelineBaton* baton) { return baton->negateAlpha; }
@@ -1352,7 +1352,7 @@ void PipelineBaton_SetAngle(PipelineBaton* baton, int val) { baton->angle = val;
 double PipelineBaton_GetRotationAngle(PipelineBaton* baton) { return baton->rotationAngle; }
 void PipelineBaton_SetRotationAngle(PipelineBaton* baton, double val) { baton->rotationAngle = val; }
 double* PipelineBaton_GetRotationBackground(PipelineBaton* baton) { return baton->rotationBackground.data(); }
-void PipelineBaton_SetRotationBackground(PipelineBaton* baton, std::vector<double> val) { baton->rotationBackground = val; }
+void PipelineBaton_SetRotationBackground(PipelineBaton* baton, double* val, size_t count) { baton->rotationBackground = std::vector<double>(val, val + count); }
 bool PipelineBaton_GetRotateBeforePreExtract(PipelineBaton* baton) { return baton->rotateBeforePreExtract; }
 void PipelineBaton_SetRotateBeforePreExtract(PipelineBaton* baton, bool val) { baton->rotateBeforePreExtract = val; }
 bool PipelineBaton_GetFlip(PipelineBaton* baton) { return baton->flip; }
@@ -1368,15 +1368,15 @@ void PipelineBaton_SetExtendLeft(PipelineBaton* baton, int val) { baton->extendL
 int PipelineBaton_GetExtendRight(PipelineBaton* baton) { return baton->extendRight; }
 void PipelineBaton_SetExtendRight(PipelineBaton* baton, int val) { baton->extendRight = val; }
 double* PipelineBaton_GetExtendBackground(PipelineBaton* baton) { return baton->extendBackground.data(); }
-void PipelineBaton_SetExtendBackground(PipelineBaton* baton, std::vector<double> val) { baton->extendBackground = val; }
+void PipelineBaton_SetExtendBackground(PipelineBaton* baton, double* val, size_t count) { baton->extendBackground = std::vector<double>(val, val + count); }
 bool PipelineBaton_GetWithoutEnlargement(PipelineBaton* baton) { return baton->withoutEnlargement; }
 void PipelineBaton_SetWithoutEnlargement(PipelineBaton* baton, bool val) { baton->withoutEnlargement = val; }
 bool PipelineBaton_GetWithoutReduction(PipelineBaton* baton) { return baton->withoutReduction; }
 void PipelineBaton_SetWithoutReduction(PipelineBaton* baton, bool val) { baton->withoutReduction = val; }
 double* PipelineBaton_GetAffineMatrix(PipelineBaton* baton) { return baton->affineMatrix.data(); }
-void PipelineBaton_SetAffineMatrix(PipelineBaton* baton, std::vector<double> val) { baton->affineMatrix = val; }
+void PipelineBaton_SetAffineMatrix(PipelineBaton* baton, double* val, size_t count) { baton->affineMatrix = std::vector<double>(val, val + count); }
 double* PipelineBaton_GetAffineBackground(PipelineBaton* baton) { return baton->affineBackground.data(); }
-void PipelineBaton_SetAffineBackground(PipelineBaton* baton, std::vector<double> val) { baton->affineBackground = val; }
+void PipelineBaton_SetAffineBackground(PipelineBaton* baton, double* val, size_t count) { baton->affineBackground = std::vector<double>(val, val + count); }
 double PipelineBaton_GetAffineIdx(PipelineBaton* baton) { return baton->affineIdx; }
 void PipelineBaton_SetAffineIdx(PipelineBaton* baton, double val) { baton->affineIdx = val; }
 double PipelineBaton_GetAffineIdy(PipelineBaton* baton) { return baton->affineIdy; }
@@ -1496,7 +1496,7 @@ void PipelineBaton_SetWithMetadataStrs(PipelineBaton* baton, std::unordered_map<
 int PipelineBaton_GetTimeoutSeconds(PipelineBaton* baton) { return baton->timeoutSeconds; }
 void PipelineBaton_SetTimeoutSeconds(PipelineBaton* baton, int val) { baton->timeoutSeconds = val; }
 double* PipelineBaton_GetConvKernel(PipelineBaton* baton) { return baton->convKernel.get(); }
-void PipelineBaton_SetConvKernel(PipelineBaton* baton, std::unique_ptr<double[]> val) { baton->convKernel = std::move(val); }
+void PipelineBaton_SetConvKernelSize(PipelineBaton* baton, unsigned int size) { baton->convKernel = std::unique_ptr<double[]>(new double[size]); }
 int PipelineBaton_GetConvKernelWidth(PipelineBaton* baton) { return baton->convKernelWidth; }
 void PipelineBaton_SetConvKernelWidth(PipelineBaton* baton, int val) { baton->convKernelWidth = val; }
 int PipelineBaton_GetConvKernelHeight(PipelineBaton* baton) { return baton->convKernelHeight; }
@@ -1521,8 +1521,8 @@ VipsInterpretation PipelineBaton_GetColourspaceInput(PipelineBaton* baton) { ret
 void PipelineBaton_SetColourspaceInput(PipelineBaton* baton, VipsInterpretation val) { baton->colourspaceInput = val; }
 VipsInterpretation PipelineBaton_GetColourspace(PipelineBaton* baton) { return baton->colourspace; }
 void PipelineBaton_SetColourspace(PipelineBaton* baton, VipsInterpretation val) { baton->colourspace = val; }
-std::vector<int> PipelineBaton_GetDelay(PipelineBaton* baton) { return baton->delay; }
-void PipelineBaton_SetDelay(PipelineBaton* baton, std::vector<int> val) { baton->delay = val; }
+int* PipelineBaton_GetDelay(PipelineBaton* baton) { return baton->delay.data(); }
+void PipelineBaton_SetDelay(PipelineBaton* baton, int* val, size_t count) { baton->delay = std::vector<int>(val, val + count); }
 int PipelineBaton_GetLoop(PipelineBaton* baton) { return baton->loop; }
 void PipelineBaton_SetLoop(PipelineBaton* baton, int val) { baton->loop = val; }
 int PipelineBaton_GetTileSize(PipelineBaton* baton) { return baton->tileSize; }
@@ -1538,7 +1538,7 @@ void PipelineBaton_SetTileFormat(PipelineBaton* baton, const char* val) { baton-
 int PipelineBaton_GetTileAngle(PipelineBaton* baton) { return baton->tileAngle; }
 void PipelineBaton_SetTileAngle(PipelineBaton* baton, int val) { baton->tileAngle = val; }
 double* PipelineBaton_GetTileBackground(PipelineBaton* baton) { return baton->tileBackground.data(); }
-void PipelineBaton_SetTileBackground(PipelineBaton* baton, std::vector<double> val) { baton->tileBackground = val; }
+void PipelineBaton_SetTileBackground(PipelineBaton* baton, double* val, size_t count) { baton->tileBackground = std::vector<double>(val, val + count); }
 int PipelineBaton_GetTileSkipBlanks(PipelineBaton* baton) { return baton->tileSkipBlanks; }
 void PipelineBaton_SetTileSkipBlanks(PipelineBaton* baton, int val) { baton->tileSkipBlanks = val; }
 VipsForeignDzDepth PipelineBaton_GetTileDepth(PipelineBaton* baton) { return baton->tileDepth; }
@@ -1546,7 +1546,7 @@ void PipelineBaton_SetTileDepth(PipelineBaton* baton, VipsForeignDzDepth val) { 
 const char* PipelineBaton_GetTileId(PipelineBaton* baton) { return baton->tileId.c_str(); }
 void PipelineBaton_SetTileId(PipelineBaton* baton, const char* val) { baton->tileId = val; }
 double* PipelineBaton_GetRecombMatrix(PipelineBaton* baton) { return baton->recombMatrix.get(); }
-void PipelineBaton_SetRecombMatrix(PipelineBaton* baton, std::unique_ptr<double[]> val) { baton->recombMatrix = std::move(val); }
+void PipelineBaton_SetRecombMatrixSize(PipelineBaton* baton, unsigned int size) { baton->recombMatrix = std::unique_ptr<double[]>(new double[size]); }
 
 void PipelineBaton_Composite_PushBack(PipelineBaton* baton, Composite * value) { baton->composite.push_back(value); }
 void PipelineBaton_JoinChannelIn_PushBack(PipelineBaton* baton, InputDescriptor * value) { baton->joinChannelIn.push_back(value); }
@@ -1559,4 +1559,4 @@ void PipelineBaton_AffineBackground_PushBack(PipelineBaton* baton, double value)
 void PipelineBaton_Delay_PushBack(PipelineBaton* baton, int value) { baton->delay.push_back(value); }
 void PipelineBaton_TileBackground_PushBack(PipelineBaton* baton, double value) { baton->tileBackground.push_back(value); }
 
-void PipelineBaton_WithMetadataStrs_Insert(PipelineBaton* baton, std::pair<std::string, std::string> value) { baton->withMetadataStrs.insert(value); }
+void PipelineBaton_WithMetadataStrs_Insert(PipelineBaton* baton, const char* key, const char* value) {  baton->withMetadataStrs.insert(std::make_pair(std::string(key), std::string(value))); }
