@@ -164,12 +164,14 @@ class MetadataWorker : public Napi::AsyncWorker {
   metadata(options, callback)
 */
 Napi::Value metadata(const Napi::CallbackInfo& info) {
+  rlbox_sandbox_vips* sandbox = GetVipsSandbox();
+
   // V8 objects are converted to non-V8 types held in the baton struct
   MetadataBaton *baton = CreateMetadataBaton();
   Napi::Object options = info[0].As<Napi::Object>();
 
   // Input
-  MetadataBaton_SetInput(baton, sharp::CreateInputDescriptor(options.Get("input").As<Napi::Object>()));
+  MetadataBaton_SetInput(baton, sharp::CreateInputDescriptor(sandbox, options.Get("input").As<Napi::Object>()).UNSAFE_unverified());
 
   // Function to notify of libvips warnings
   Napi::Function debuglog = options.Get("debuglog").As<Napi::Function>();

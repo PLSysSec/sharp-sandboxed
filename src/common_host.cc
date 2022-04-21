@@ -76,8 +76,9 @@ namespace sharp {
   }
 
   // Create an InputDescriptor instance from a Napi::Object describing an input image
-  InputDescriptor* CreateInputDescriptor(Napi::Object input) {
-    InputDescriptor *descriptor = CreateEmptyInputDescriptor();
+  tainted_vips<InputDescriptor*> CreateInputDescriptor(rlbox_sandbox_vips* sandbox, Napi::Object input) {
+    tainted_vips<InputDescriptor*> t_descriptor = sandbox->invoke_sandbox_function(CreateEmptyInputDescriptor);
+    InputDescriptor* descriptor = t_descriptor.UNSAFE_unverified();
     if (HasAttr(input, "file")) {
       InputDescriptor_SetFile(descriptor, AttrAsStr(input, "file").c_str());
     } else if (HasAttr(input, "buffer")) {
@@ -136,7 +137,7 @@ namespace sharp {
     InputDescriptor_SetAccess(descriptor, (int) AttrAsBool(input, "sequentialRead") ? VIPS_ACCESS_SEQUENTIAL : VIPS_ACCESS_RANDOM);
     // Remove safety features and allow unlimited SVG/PNG input
     InputDescriptor_SetUnlimited(descriptor, AttrAsBool(input, "unlimited"));
-    return descriptor;
+    return t_descriptor;
   }
 
   // How many tasks are in the queue?
@@ -150,6 +151,10 @@ namespace sharp {
   */
   std::function<void(void*, char*)> FreeCallback = [](void*, char* data) {
     g_free(data);
+  };
+
+  std::function<void(void*, char*)> DeleteCallback = [](void*, char* data) {
+    delete data;
   };
 
   /*
@@ -178,4 +183,39 @@ namespace sharp {
     }
     return warning;
   }
+
+  static tainted_vips<const char*> CopyStringToSandbox(rlbox_sandbox_vips* sandbox, const char* str) {
+    if (!str) {
+      return nullptr;
+    }
+
+    size_t len = strnlen(str, std::numeric_limits<size_t>::max() - 1);
+    tainted_vips<char*> t_str = sandbox->malloc_in_sandbox<char>(len + 1);
+    strncpy(t_str.unverified_safe_pointer_because(len + 1, "String copy"), str, len);
+    return rlbox::sandbox_const_cast<const char*>(t_str);
+  }
+
+  tainted_vips<int> SandboxVipsEnumFromNick(rlbox_sandbox_vips* sandbox, const char *domain, GType type, const char *str) {
+    tainted_vips<const char*> t_domain = CopyStringToSandbox(sandbox, domain);
+    tainted_vips<const char*> t_str = CopyStringToSandbox(sandbox, str);
+
+    tainted_vips<int> ret = sandbox->invoke_sandbox_function(vips_enum_from_nick, t_domain, type, t_str);
+
+    if (t_domain) {
+      sandbox->free_in_sandbox(t_domain);
+    }
+    if (t_str) {
+      sandbox->free_in_sandbox(t_str);
+    }
+    return ret;
+  }
+
+  std::string SandboxVipsEnumNick(rlbox_sandbox_vips* sandbox, GType enm, tainted_vips<int> value) {
+    tainted_vips<const char*> t_ret = sandbox->invoke_sandbox_function(vips_enum_nick, enm, value);
+    std::string ret = t_ret.copy_and_verify_string([](std::string val) {
+      return val;
+    });
+    return ret;
+  }
+
 }

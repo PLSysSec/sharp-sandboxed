@@ -19,6 +19,8 @@
 
 #include <napi.h>
 
+#include "rlbox_mgr.h"
+
 struct InputDescriptor;
 
 namespace sharp {
@@ -37,7 +39,7 @@ namespace sharp {
   std::vector<int32_t> AttrAsInt32Vector(Napi::Object obj, std::string attr);
 
   // Create an InputDescriptor instance from a Napi::Object describing an input image
-  InputDescriptor* CreateInputDescriptor(Napi::Object input);
+  tainted_vips<InputDescriptor*> CreateInputDescriptor(rlbox_sandbox_vips* sandbox, Napi::Object input);
 
 
   // How many tasks are in the queue?
@@ -50,6 +52,7 @@ namespace sharp {
     Called when a Buffer undergoes GC, required to support mixed runtime libraries in Windows
   */
   extern std::function<void(void*, char*)> FreeCallback;
+  extern std::function<void(void*, char*)> DeleteCallback;
 
   /*
     Called with warnings from the glib-registered "VIPS" domain
@@ -60,6 +63,17 @@ namespace sharp {
     Pop the oldest warning message from the queue
   */
   std::string VipsWarningPop();
+
+  /*
+    Call vips_enum_from_nick in the given sandbox
+  */
+  tainted_vips<int> SandboxVipsEnumFromNick(rlbox_sandbox_vips* sandbox, const char *domain, GType type, const char *str);
+
+  /*
+    call vips_enum_nick in the given sandbox
+  */
+  std::string SandboxVipsEnumNick(rlbox_sandbox_vips* sandbox, GType enm, tainted_vips<int> value);
+
 
 }
 

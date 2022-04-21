@@ -98,6 +98,7 @@
       'src/pipeline_host.cc',
       'src/pipeline_sandbox.cc',
       'src/utilities.cc',
+      'src/rlbox_mgr.cc',
       'src/sharp.cc'
     ],
     'include_dirs': [
@@ -168,7 +169,7 @@
               ],
               'ldflags': [
                 # Ensure runtime linking is relative to sharp.node
-                '-Wl,-s -Wl,--disable-new-dtags -Wl,-rpath=\'$$ORIGIN/../../<(sharp_vendor_dir)/lib\''
+                '-Wl,--disable-new-dtags -Wl,-rpath=\'$$ORIGIN/../../<(sharp_vendor_dir)/lib\''
               ]
             }
           }]
@@ -179,7 +180,8 @@
       '-std=c++17',
       '-fexceptions',
       '-Wall',
-      '-Os'
+      '-O0',
+      '-g'
     ],
     'xcode_settings': {
       'CLANG_CXX_LANGUAGE_STANDARD': 'c++11',

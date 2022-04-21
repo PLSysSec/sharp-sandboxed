@@ -98,12 +98,14 @@ class StatsWorker : public Napi::AsyncWorker {
   stats(options, callback)
 */
 Napi::Value stats(const Napi::CallbackInfo& info) {
+  rlbox_sandbox_vips* sandbox = GetVipsSandbox();
+
   // V8 objects are converted to non-V8 types held in the baton struct
   StatsBaton *baton = CreateStatsBaton();
   Napi::Object options = info[0].As<Napi::Object>();
 
   // Input
-  StatsBaton_SetInput(baton, sharp::CreateInputDescriptor(options.Get("input").As<Napi::Object>()));
+  StatsBaton_SetInput(baton, sharp::CreateInputDescriptor(sandbox, options.Get("input").As<Napi::Object>()).UNSAFE_unverified());
 
   // Function to notify of libvips warnings
   Napi::Function debuglog = options.Get("debuglog").As<Napi::Function>();
