@@ -23,17 +23,21 @@
 #include "stats_sandbox.h"
 #include "stats_host.h"
 
+
+#include "rlbox_mgr.h"
+rlbox_load_structs_from_library(vips);
+
 class StatsWorker : public Napi::AsyncWorker {
  public:
-  StatsWorker(Napi::Function callback, StatsBaton *baton, Napi::Function debuglog) :
-    Napi::AsyncWorker(callback), baton(baton), debuglog(Napi::Persistent(debuglog)) {}
+  StatsWorker(Napi::Function callback, tainted_vips<StatsBaton*> t_baton, Napi::Function debuglog, rlbox_sandbox_vips* sandbox) :
+    Napi::AsyncWorker(callback), t_baton(t_baton), debuglog(Napi::Persistent(debuglog)), sandbox(sandbox) {}
   ~StatsWorker() {}
 
   void Execute() {
     // Decrement queued task counter
     g_atomic_int_dec_and_test(&sharp::counterQueue);
 
-    StatsWorkerExecute(baton);
+    sandbox->invoke_sandbox_function(StatsWorkerExecute, t_baton);
   }
 
   void OnOK() {
@@ -47,51 +51,63 @@ class StatsWorker : public Napi::AsyncWorker {
       warning = sharp::VipsWarningPop();
     }
 
-    if (StatsBaton_GetErr(baton) == std::string("")) {
+    std::string errString = sandbox->invoke_sandbox_function(StatsBaton_GetErr, t_baton).copy_and_verify_string([](std::string val) {
+      // Worst case, the library says there is an error when there isn't
+      return val;
+    });
+
+    const char image_attrib_reason[] = "Reading attributes of the image for the first and only time.";
+
+
+    if (errString == std::string("")) {
       // Stats Object
       Napi::Object info = Napi::Object::New(env);
       Napi::Array channels = Napi::Array::New(env);
 
-      size_t baton_channelStats_size = StatsBaton_GetChannelStats_Size(baton);
-      ChannelStats* baton_channelStats = StatsBaton_GetChannelStats(baton);
+      size_t baton_channelStats_size = sandbox->invoke_sandbox_function(StatsBaton_GetChannelStats_Size, t_baton).unverified_safe_because(image_attrib_reason);
+      tainted_vips<ChannelStats*> baton_channelStats = sandbox->invoke_sandbox_function(StatsBaton_GetChannelStats, t_baton);
 
       for (size_t i = 0; i < baton_channelStats_size; i++) {
-        ChannelStats& c = baton_channelStats[i];
         Napi::Object channelStat = Napi::Object::New(env);
-        channelStat.Set("min", c.min);
-        channelStat.Set("max", c.max);
-        channelStat.Set("sum", c.sum);
-        channelStat.Set("squaresSum", c.squaresSum);
-        channelStat.Set("mean", c.mean);
-        channelStat.Set("stdev", c.stdev);
-        channelStat.Set("minX", c.minX);
-        channelStat.Set("minY", c.minY);
-        channelStat.Set("maxX", c.maxX);
-        channelStat.Set("maxY", c.maxY);
+        channelStat.Set("min", baton_channelStats[i].min.unverified_safe_because(image_attrib_reason));
+        channelStat.Set("max", baton_channelStats[i].max.unverified_safe_because(image_attrib_reason));
+        channelStat.Set("sum", baton_channelStats[i].sum.unverified_safe_because(image_attrib_reason));
+        channelStat.Set("squaresSum", baton_channelStats[i].squaresSum.unverified_safe_because(image_attrib_reason));
+        channelStat.Set("mean", baton_channelStats[i].mean.unverified_safe_because(image_attrib_reason));
+        channelStat.Set("stdev", baton_channelStats[i].stdev.unverified_safe_because(image_attrib_reason));
+        channelStat.Set("minX", baton_channelStats[i].minX.unverified_safe_because(image_attrib_reason));
+        channelStat.Set("minY", baton_channelStats[i].minY.unverified_safe_because(image_attrib_reason));
+        channelStat.Set("maxX", baton_channelStats[i].maxX.unverified_safe_because(image_attrib_reason));
+        channelStat.Set("maxY", baton_channelStats[i].maxY.unverified_safe_because(image_attrib_reason));
         channels.Set(i, channelStat);
       }
 
       info.Set("channels", channels);
-      info.Set("isOpaque", StatsBaton_GetIsOpaque(baton));
-      info.Set("entropy", StatsBaton_GetEntropy(baton));
-      info.Set("sharpness", StatsBaton_GetSharpness(baton));
+      info.Set("isOpaque", sandbox->invoke_sandbox_function(StatsBaton_GetIsOpaque, t_baton).unverified_safe_because(image_attrib_reason));
+      info.Set("entropy", sandbox->invoke_sandbox_function(StatsBaton_GetEntropy, t_baton).unverified_safe_because(image_attrib_reason));
+      info.Set("sharpness", sandbox->invoke_sandbox_function(StatsBaton_GetSharpness, t_baton).unverified_safe_because(image_attrib_reason));
       Napi::Object dominant = Napi::Object::New(env);
-      dominant.Set("r", StatsBaton_GetDominantRed(baton));
-      dominant.Set("g", StatsBaton_GetDominantGreen(baton));
-      dominant.Set("b", StatsBaton_GetDominantBlue(baton));
+      dominant.Set("r", sandbox->invoke_sandbox_function(StatsBaton_GetDominantRed, t_baton).unverified_safe_because(image_attrib_reason));
+      dominant.Set("g", sandbox->invoke_sandbox_function(StatsBaton_GetDominantGreen, t_baton).unverified_safe_because(image_attrib_reason));
+      dominant.Set("b", sandbox->invoke_sandbox_function(StatsBaton_GetDominantBlue, t_baton).unverified_safe_because(image_attrib_reason));
       info.Set("dominant", dominant);
       Callback().MakeCallback(Receiver().Value(), { env.Null(), info });
     } else {
-      std::string errString = StatsBaton_GetErr(baton);
+      auto errString = sandbox->invoke_sandbox_function(StatsBaton_GetErr, t_baton)
+      .copy_and_verify_string([](std::string val) {
+        // Worst case you'd get a bad error message
+        return val;
+      });
       Callback().MakeCallback(Receiver().Value(), { Napi::Error::New(env, errString).Value() });
     }
 
-    DestroyStatsBaton(baton);
+    sandbox->invoke_sandbox_function(DestroyStatsBaton, t_baton);
   }
 
  private:
-  StatsBaton* baton;
+  tainted_vips<StatsBaton*> t_baton;
   Napi::FunctionReference debuglog;
+  rlbox_sandbox_vips* sandbox;
 };
 
 /*
@@ -101,18 +117,18 @@ Napi::Value stats(const Napi::CallbackInfo& info) {
   rlbox_sandbox_vips* sandbox = GetVipsSandbox();
 
   // V8 objects are converted to non-V8 types held in the baton struct
-  StatsBaton *baton = CreateStatsBaton();
+  tainted_vips<StatsBaton*> t_baton = sandbox->invoke_sandbox_function(CreateStatsBaton);
   Napi::Object options = info[0].As<Napi::Object>();
 
   // Input
-  StatsBaton_SetInput(baton, sharp::CreateInputDescriptor(sandbox, options.Get("input").As<Napi::Object>()).UNSAFE_unverified());
+  sandbox->invoke_sandbox_function(StatsBaton_SetInput, t_baton, sharp::CreateInputDescriptor(sandbox, options.Get("input").As<Napi::Object>()));
 
   // Function to notify of libvips warnings
   Napi::Function debuglog = options.Get("debuglog").As<Napi::Function>();
 
   // Join queue for worker thread
   Napi::Function callback = info[1].As<Napi::Function>();
-  StatsWorker *worker = new StatsWorker(callback, baton, debuglog);
+  StatsWorker *worker = new StatsWorker(callback, t_baton, debuglog, sandbox);
   worker->Receiver().Set("options", options);
   worker->Queue();
 
